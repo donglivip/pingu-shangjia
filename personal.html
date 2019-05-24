@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/personal.css" />
+		<script type="text/javascript" src="js/dui.js"></script>
+		<script type="text/javascript" src="js/mui.js"></script>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="header-box">
+				<div class="header-aside mui-action-back" >
+					<img src="img/block-left.png" />
+				</div>
+				<div class="header-content">个人信息</div>
+				<div class="header-aside"></div>
+			</div>
+			<div class="main">
+				<!--<div class="main-portrait">
+					<div class="main-text">头像</div>
+					<img id="avatar" src="img/485263.jpg" />
+				</div>-->
+				<div class="main-Name" onclick="mui.openWindow('Name.html')">
+					<div class="main-text">名称</div>
+					<div class="main-news"><span class="name">雨雪霏霏</span></div>
+				</div>
+				<div class="main-box" onclick="mui.openWindow('Password.html')">
+					<div class="main-text">登录密码</div>
+				</div>
+				<!--<div class="main-box" onclick="mui.openWindow('Password.html')">
+					<div class="main-text">支付密码</div>
+				</div>-->
+			</div>
+			<div class="bottom">
+				<div class="bottom-text">退出账号</div>
+			</div>
+		</div>
+
+    <script src="js/jquery-2.1.0.js"></script>
+    <script src="js/url.js"></script>
+    <script type="text/javascript">
+    	$(function(){
+    		$('.name').text(localStorage.getItem('smMeShopName'))
+    		$('#avatar').attr('src',localStorage.getItem('smMeShopImg'))
+    		$('.bottom-text').click(function(){
+    			localStorage.clear()
+    			mui.openWindow('login.html','login')
+    		})
+    		mui.plusReady(function () {
+			    addEventListener('shop',function(){
+					$('.name').text(localStorage.getItem('smMeShopName'))
+    		$('#avatar').attr('src',localStorage.getItem('smMeShopImg'))
+    		$('.bottom-text').click(function(){
+    			localStorage.clear()
+    			mui.openWindow('login.html','login')
+    		})
+				})
+			})
+    	});
+    </script>
+	</body>
+	
+
+</html>

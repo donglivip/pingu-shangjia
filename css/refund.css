@@ -1,0 +1,104 @@
+* {
+	margin: 0;
+	padding: 0;
+	font-size: .26rem;
+}
+
+html,
+body,
+.wrapper {
+	width: 100%;
+	height: 100%;
+}
+
+.wrapper {
+	background: #F3F3F3;
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: .8rem;
+	background: #D61A0A;
+}
+
+.header-aside {
+	width: 1.5rem;
+	margin: .24rem;
+}
+
+.header-text {
+	text-align: right;
+	width: 1.5rem;
+	font-size: .22rem;
+	color: #FFFFFF;
+	margin: .24rem;
+}
+
+.header-aside img {
+	height: .36rem;
+}
+
+.header-content {
+	flex: 1;
+	text-align: center;
+	font-size: .34rem;
+	color: #FFFFFF;
+}
+
+.main-box {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	height: .9rem;
+	background: #FFFFFF;
+	border-bottom: 1px solid #F3F3F3;
+}
+
+.main-text {
+	font-size: .28rem;
+	color: #333333;
+	padding-left: .24rem;
+}
+
+.main-upload {
+	height: 2.12rem;
+	background: #FFFFFF;
+	border-bottom: 1px solid #F3F3F3;
+}
+
+.main-news {
+	font-size: .28rem;
+	color: #333333;
+	padding: .24rem 0 0 .24rem;
+}
+
+.main-upload img {
+	height: 1.12rem;
+	padding: .12rem .24rem .24rem .24rem;
+	border-radius: .2rem;
+}
+
+.main-refund {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	margin: .8rem .24rem 0 .24rem;
+}
+
+.main-word {
+	font-size: .34rem;
+	color: #FFFFFF;
+	padding: .2rem .5rem;
+	background: #A2A2A2;
+	border-radius: 1rem;
+}
+
+.main-Agree {
+	font-size: .34rem;
+	color: #FFFFFF;
+	padding: .2rem .5rem;
+	background: #D61A0A;
+	border-radius: 1rem;
+}

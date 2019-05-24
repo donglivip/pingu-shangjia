@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/main.css" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+		<script type="text/javascript" src="js/dui.js"></script>
+		<script type="text/javascript" src="js/mui.js"></script>
+	</head>
+	<style type="text/css">
+		.kefy {
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, .5);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			top: 0;
+			left: 0;
+		}
+		
+		.kefy iframe {
+			background: #FFFFFF;
+			border-radius: 5px;
+		}
+		
+		.kefy img {
+			position: absolute;
+			top: 6%;
+			right: 6%;
+			height: .5rem;
+		}
+	</style>
+
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-aside">
+
+				</div>
+				<div class="header-content">消息</div>
+				<div class="header-aside"></div>
+			</div>
+			<div class="main">
+				<div class="main-container main-container02"></div>
+			</div>
+			<div class="kefy" style="display: none;">
+				<img src="img/Group 27.png" id="close" />
+				<iframe src="" width="100%" height="100%" frameborder="0"></iframe>
+			</div>
+		</div>
+
+		<script src="js/jquery-2.1.0.js"></script>
+		<script src="js/url.js"></script>
+		<script type="text/javascript">
+			mui.init()
+
+			function plusReady() {
+				if(localStorage.getItem('smMerchantId') == 'null' || localStorage.getItem('smMerchantId') == null) {
+					mui.openWindow({
+						url: 'Login.html',
+						id: 'Login'
+					});
+				}
+				var indexWV = plus.webview.getTopWebview();
+				mui.fire(indexWV, 'homeReady');
+			}
+			if(window.plus) {
+				plusReady()
+			} else {
+				document.addEventListener('plusready', plusReady, false);
+			};
+
+			//页面跳转 传参
+			function MyOpen(url, id, typeId) {
+				mui.openWindow({
+					url: url,
+					id: id,
+					extras: {
+						typeId: typeId
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+
+			};
+
+			$(function() {
+				var smUserId = localStorage.getItem('smMerchantId');
+				var shopLogo = localStorage.getItem('smMeShopImg'); //店铺图片
+				//				查询消息
+// 				setInterval(function() {
+// 					$.ajax({
+// 						type: "POST",
+// 						url: url_url + "/house/findMessage",
+// 						dataType: 'json',
+// 						async: true,
+// 						data: {
+// 							'id': smUserId
+// 						},
+// 						success: function(res) {
+// 							if(res.status == 200) {
+// 								$('.main-container02').html('')
+// 								for(var i in res.data) {
+// 									$('.main-container02').append(`
+// 									<div class="main-box" id='${res.data[i].smMdContent}' newdid='${res.data[i].smMessageDetailId}'>
+// 										<div class="main-right">
+// 											<div class="right-top">
+// 												<div class="main-text">新的聊天</div>
+// 												<div class="main-time">${res.data[i].smMdCreateTimeString} </div>
+// 											</div>
+// 											<div class="right-bottom">
+// 												<div class="main-sgin">有新用户咨询商品啦,点击查看!</div>
+// 											</div>
+// 										</div>	
+// 									</div>
+// 								`)
+// 								}
+// 
+// 							} else {
+// 								alert(res.msg)
+// 							}
+// 
+// 						},
+// 						error: function(err) {
+// 
+// 						}
+// 					});
+// 				}, 3000)
+				$('.main-container02').on('click', '.main-box', function() {
+					var userid = $(this).attr('id')
+					var smUserId = localStorage.getItem('smMerchantId');
+					var newdid = $(this).attr('newdid');
+					$('.kefy').css('display', 'flex')
+					$.ajax({
+						type: "POST",
+						url: url_url + "/house/updateRead",
+						dataType: 'json',
+						async: true,
+						data: {
+							'id': newdid
+						},
+						success: function(res) {
+							
+						},
+						error: function(err) {
+
+						}
+
+					});
+					$('.kefy iframe').attr('src', url_url + '/house/intoMerchan?userId=' + userid + '&merchantId=' + smUserId)
+				})
+				$('#close').click(function() {
+					$('.kefy').hide()
+				})
+			});
+		</script>
+	</body>
+
+</html>

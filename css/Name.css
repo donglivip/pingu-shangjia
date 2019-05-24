@@ -1,0 +1,130 @@
+* {
+	margin: 0;
+	padding: 0;
+	font-size: .26rem;
+}
+
+html,
+body,
+.wrapper {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.wrapper {
+	background: #F3F3F3;
+}
+
+.header{
+	background: linear-gradient(45deg,#FF7552,#FC4149);
+	display: flex;
+	align-items: center;
+}
+.header-aside {
+	width: .3rem;
+	margin: .24rem;
+}
+
+.header-aside img {
+	height: .36rem;
+}
+
+.header-content {
+	flex: 1;
+	text-align: center;
+	font-size: .34rem;
+	color: #FFFFFF;
+}
+
+.main {
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	background: #FFFFFF;
+	height: 1.2rem;
+}
+
+.main-text {
+	font-size: .28rem;
+	color: #A2A2A2;
+	margin: 0 .4rem;
+	border-left: 1px solid #A2A2A2;
+	padding-left: .06rem;
+	border: 0rem;
+	outline: none;
+	width: 100%;
+	height: 0.8rem;
+}
+
+.main-Submission {
+	text-align: center;
+	font-size: .34rem;
+	color: #FFFFFF;
+	padding: .3rem 0;
+	background: linear-gradient(45deg,#FF7552,#FC4149);
+	border-radius: 1rem;
+	margin: 1.2rem .3rem 0 .3rem;
+}
+
+
+
+/*审核会员*/
+.unaudited{
+				margin-bottom: 0.24rem;
+			}
+			.unaudited img{
+				width: 1.1rem;
+				height: 1.1rem;
+				border-radius: 8px;
+			}
+			.main-content{
+				display: flex;
+				padding: 0.24rem 0 0.12rem 0.24rem;
+				border-bottom: 1px solid #eaeaea;
+			}
+			.main-txt{
+				display: flex;
+				flex-direction: column;
+				margin-left: 0.24rem;
+				
+			}
+			.content-name{
+				color: #333333;
+				font-size: 0.28rem;
+			}
+			.content-time{
+				color: #333333;
+				font-size: 0.24rem;
+			}
+			.main-btn{
+				height: 1.08rem;
+				display: flex;
+				align-items: center;
+			}
+			.main-btn div{
+				color: #fff;
+				width: 3.32rem;
+				height: 0.84rem;
+				text-align: center;
+				line-height: 0.84rem;
+				border-radius: 8px;
+				margin-left: 0.15rem;
+				font-size: 0.28rem;
+				
+			}
+			.refuse{
+				background: #A2A2A2;
+				margin-right: 0.15rem;
+			}
+			.accept{
+				background: #D61A0A;
+			}
+			.main-accept{
+				height: 0.96rem;
+				line-height: 0.96rem;
+				display: flex;
+				justify-content: flex-end;
+				padding-right: 0.24rem;
+				color: #333333;
+			}

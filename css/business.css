@@ -1,0 +1,163 @@
+* {
+	margin: 0;
+	padding: 0;
+	font-size: .26rem;
+}
+
+html,
+body,
+{
+	width: 100%;
+	height: 100%;
+	overflow-x: ;
+}
+
+.wrapper {
+	height: 100%;
+	width: 100%;
+	background: #F3F3F3;
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background: #D61A0A;
+	border-bottom: 1px solid #F3F3F3;
+	position: fixed;
+	width: 100%;
+}
+
+.header-aside {
+	align-items: center;
+	justify-content: space-between;
+	width: .3rem;
+	margin: .24rem;
+}
+#ShopType{
+	margin:.5rem .2rem;
+}
+#ShopType select{
+	border: 1px solid gainsboro;
+	height: .8rem;
+	width: 3rem;
+	margin: .1rem;
+}
+.header-aside img {
+	height: .36rem;
+}
+
+.header-content {
+	font-size: .34rem;
+	color: #333333;
+}
+
+.main {
+	height: calc(100% - .8rem);
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+.main-box {
+	display: flex;
+	align-content: center;
+	justify-content: flex-start;
+	background: #FFFFFF;
+	height: .9rem;
+	border-bottom: 1px solid #F3F3F3;
+}
+
+.main-text {
+	font-size: 0.24rem;
+	padding: 0.24rem 0 0.24rem 0.24rem;
+	border: 0rem;
+	width: 70%;
+	height: 0.4rem;
+	outline: none;
+}
+
+.main-container {
+	display: flex;
+	align-content: center;
+	justify-content: space-between;
+	height: .9rem;
+	background: #FFFFFF;
+	border-bottom: 1px solid #F3F3F3;
+}
+
+.main-container img {
+	height: 0.27rem;
+	margin: 0.3rem 0.24rem 0.3rem 0.14rem;
+}
+
+.main-news {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex: 1;
+	font-size: .24rem;
+	color: #333333;
+}
+
+.main-Photo {
+	height: 3.6rem;
+	background: #FFFFFF;
+	border-bottom: 1px solid #F3F3F3;
+}
+
+.main-upload {
+	font-size: .24rem;
+	color: #333333;
+	padding: .24rem 0 .24rem .24rem;
+}
+
+.main-Certificates {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+}
+
+.main-Certificates img {
+	width: 3.3rem;
+	height: 2.46rem;
+	/*padding: 0 .24rem .24rem .24rem;*/
+}
+
+.licenseImg {
+	width: 3.3rem;
+	height: 2.46rem;
+	padding: 0 .24rem .24rem .24rem;
+}
+
+.main-bottom {
+	height: 2.8rem;
+	background: #FFFFFF;
+}
+
+.main-trademark {
+	font-size: .28rem;
+	color: #333333;
+	padding: .24rem 0 0 .24rem;
+}
+
+.main-bottom img {
+	height: 1.68rem;
+	margin: .24rem 0 .24rem .24rem;
+}
+
+.bottom {
+	height: 1.56rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.bottom-text {
+	font-size: .24rem;
+	color: #FFFFFF;
+	background: #D61A0A;
+	border-radius: 2rem;
+	color: #FFFFFF;
+	width: 90%;
+	border: 0px;
+}

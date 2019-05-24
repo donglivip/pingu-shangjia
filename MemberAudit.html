@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/Name.css" />
+		<script type="text/javascript" src="js/dui.js"></script>
+		<script type="text/javascript" src="js/mui.js"></script>
+		<style>
+			.mui-content-padded {
+				margin: 0;
+				background: #D61A0A;
+				color: #fff;
+				height: calc(100% - 44px);
+				overflow-y: scroll;
+			}
+			.mui-content{height: calc(100%);}
+			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
+				border-bottom: 0;
+				font-size: 0.28rem;
+				color: #fff;
+			}
+			.mui-segmented-control .mui-control-item {
+				/*line-height: 44px;*/
+			}
+			.mui-active{background: #FFFFFF!important;color: #D61A0A!important;}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav home" style="top: 0px;background: #D61A0A;">
+			<a class="mui-action-back  mui-pull-left"><img src="img/block-left.png" style="width: 25;height: 25px;margin-top:8px;" /></a>
+			<h1 class="mui-title" style="color: #FFFFFF;">审核管理</h1>
+		</header>
+		<div class="mui-content">
+			<div class="mui-content-padded" style="height: auto;">
+				<div class="mui-segmented-control mui-segmented-control-inverted ">
+					<a class="mui-control-item mui-active" href="#item1" id="tabLeft">待审核</a>
+					<a class="mui-control-item" href="#item2" id="tabRight">已审核</a>
+				</div>
+			</div>
+			<div id="item1" class="mui-control-content mui-active">
+
+			</div>
+			<div id="item2" class="mui-control-content">
+				
+			</div>
+		</div>
+
+		<script src="js/jquery-2.1.0.js"></script>
+		<script src="js/url.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				memberAudit(2, '#item1');
+				document.getElementById('tabLeft').addEventListener('tap', function(e) {
+					$('#item1').empty();
+					memberAudit(2, '#item1');
+				});
+				document.getElementById('tabRight').addEventListener('tap', function(e) {
+					$('#item2').empty();
+					memberAudit(1, '#item2');
+				});
+				
+				//处理审核  拒绝
+				mui("body").on("tap", ".refuse", function() {
+					let smApplyMemberId = $(this).parent().parent().data('id'); //smApplyMemberId
+					let SmAmUpdateName = localStorage.getItem('smMeUpdateName');
+					let type = 2; //拒绝
+					AuditAction(smApplyMemberId,SmAmUpdateName,type);
+				});
+				//处理审核  通过
+				mui("body").on("tap", ".accept", function() {
+					let smApplyMemberId = $(this).parent().parent().data('id'); //smApplyMemberId
+					let SmAmUpdateName = localStorage.getItem('smMeUpdateName');
+					let type = 1; //通过
+					console.log(SmAmUpdateName);
+					AuditAction(smApplyMemberId,SmAmUpdateName,type);
+				});
+				
+				function AuditAction(MemberId,UpdateName,type){
+					$.ajax({
+						type:"post",
+						url:url_url + "/merchant/updateMemberStatus",
+						async:true,
+						data:{
+							"smApplyMemberId":MemberId,
+							"type":type,
+							"SmAmUpdateName":UpdateName
+						},
+						success:function(res){
+							console.log(res);
+							location.reload();
+						},
+						error:function(err){
+							console.log(err)
+						}
+					});
+				};
+
+				function memberAudit(type, ele) {
+					let smMerchantId = localStorage.getItem('smMerchantId');
+					let memberHtml = '';
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/queryMyVip",
+						async: true,
+						data: {
+							'smMerchantId': smMerchantId,
+							'type': type
+						},
+						success: function(res) {
+							console.log(res);
+							let member = res.data;
+							let footBtn = '';
+							for(var i = 0; i < member.length; i++) {
+
+								if(type == 2) {
+									footBtn = `
+												<div class="main-btn">
+												<div class="refuse">拒绝</div>
+												<div class="accept">通过</div>
+											</div>
+								        </section>
+									`;
+								} else {
+									footBtn = `
+											<div class="main-accept">
+											<p>已通过</p>
+										   </div>
+									    </section>
+									`;
+								}
+								memberHtml += `
+							<section class="mui-table-view unaudited" data-id=${member[i].smApplyMemberId}>
+								<div class="main-content">
+									<div class="left">
+										<img src="${url_url + member[i].smAmShopLogo}"/>
+										<br/>
+										<img src="${url_url + member[i].smAmBusinessLicenesImg}"/>
+									</div>
+									
+									<div class="main-txt">
+										<p class="content-name">${member[i].smMerchantName}</p>
+										<p class="content-time">申请时间：${member[i].smAmCreateTimeString}</p>
+										<p class="content-time">申请QQ：${member[i].smAmQq}</p>
+										<p class="content-time">店铺地址：${member[i].smAmAddress}</p>
+									</div>
+								</div>` + footBtn;
+							}
+							$(ele).append(memberHtml);
+						},
+						error: function(err) {
+							console.log(err);
+						}
+					});
+				};
+
+			});
+		</script>
+	</body>
+
+</html>

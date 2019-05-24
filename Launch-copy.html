@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/Launch-copy.css" />
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-aside mui-action-back">
+					<img src="img/block-left.png">
+				</div>
+				<div class="header-text">
+					投放广告
+				</div>
+				<div class="header-aside"></div>
+			</div>
+			<div class="main">
+				<div class="top">
+					<div class="top-nav" :class="topindex==0?'top-active':''" @click="topchange(0)">
+						首页广告
+					</div>
+					<div class="top-nav" :class="topindex==1?'top-active':''" @click="topchange(1)">
+						分类广告
+					</div>
+				</div>
+				<!-- 首页广告 -->
+				<div class="main-inner" v-if="topindex==0">
+					<div class="er" @click="upload(3,slguize.smAprPrice,slguize.smAprTime,slguize.smAdvertisementPriceRuleId)">
+						<img src="img/dianpu.png">
+						<span>投放首页轮播图广告</span>
+						<span>起步价<strong>￥{{slguize.smAprPrice}}</strong> </span>
+						<span>有效期 {{slguize.smAprTime}} /月</span>
+						<small>以上价格为起步价,您投放的价格越高排名越靠前</small>
+					</div>
+					<div class="er" @click="maishou(1,sguize.smArPrice,sguize.smArTime,sguize.smAdvertisementRuleId)">
+						<img src="img/dianpu.png">
+						<span>投放首页广告区广告</span>
+						<span>起步价<strong>￥{{sguize.smArPrice}}</strong> </span>
+						<span>有效期 {{sguize.smArTime}} /月</span>
+						<small>以上价格为起步价,您投放的价格越高排名越靠前</small>
+					</div>
+				</div>
+				<!-- 分类广告 -->
+				<div class="main-inner" v-if="topindex==1">
+					<div class="nav-top">
+						<select v-model="yijiid" @change="yijicahnge">
+							<option value="" >请选择</option>
+							<option :value="val.smShopTypeId" v-for="(val,index) in yijidata">{{val.smStName}}</option>
+						</select>
+						<select v-model="erjiid" @click="haverule(4)">
+							<option value="" >请选择</option>
+							<option :value="val.smShopTypeId" v-for="(val,index) in erjidata">{{val.smStName}}</option>
+						</select>
+						<select v-model="diquid" @change='diquchange'>
+							<option value="" >选择地区</option>
+							<option :value="val.smAdvertisementAddressId" v-for="(val,index) in diqudata">{{val.smAaProvice}}{{val.smAaCity}}{{val.smAaArea}}</option>
+						</select>
+						<select v-model="shichangid" @click="haverule(1)">
+							<option value="" >选择市场</option>
+							<option :value="val.smAdvertisementMarketId" v-for="(val,index) in shicahngdata">{{val.smAmName}}</option>
+						</select>
+					</div>
+					<!-- 二级广告 -->
+					<div class="inner-main" >
+						<!-- 轮播图广告 -->
+						<div class="adver-box" v-for="val in fguize" v-if="val.smAprName==5||val.smAprName==6||val.smAprName==7||val.smAprName==8||val.smAprName==9">
+							<p>广告名称：轮播广告 - {{val.smAprName | mytype}}</p>
+							<p>起步价：{{val.smAprPrice }} /元</p>
+							<p>有效期：{{val.smAprTime }} /月</p>
+							<p>说明：以上价格仅为起步价，您的投放金额越大排名越靠前</p>
+							<div class="btn" @click="upload(2,val.smAprPrice,val.smAprTime,val.smAdvertisementPriceRuleId,2)">
+								投放
+							</div>
+						</div>
+						<!-- 普通广告 -->
+						<div class="adver-box" v-for="val in fguize" v-if="val.smAprName==1||val.smAprName==2||val.smAprName==3||val.smAprName==4">
+							<p>广告名称：普通广告 - {{val.smAprName | mytype}}</p>
+							<p>起步价：{{val.smAprPrice }} /元</p>
+							<p>有效期：{{val.smAprTime }} /月</p>
+							<p>说明：以上价格仅为起步价，您的投放金额越大排名越靠前</p>
+							<div class="btn" @click="maishou(2,val.smAprPrice,val.smAprTime,val.smAdvertisementPriceRuleId,1)">
+								投放
+							</div>
+						</div>
+					</div>
+				</div>	
+			</div>
+		</div>
+	</body>
+	<script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/mui.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		new Vue({
+			el: '.wrapper',
+			data: {
+				yijiid:'',
+				erjiid:'',
+				diquid:'',
+				shichangid:'',
+				topindex: 0,
+				sguize: [],
+				slguize:[],
+				mysrc: '',
+				smAcPrice: '',
+				smAcTime: '',
+				mytype: '',
+				shijiprice: 0,
+				channel: '',
+				smAdvertisementRuleId: '',
+				yijidata:[],
+				erjidata:[],
+				diqudata:[],
+				shicahngdata:[],
+				sanjidata:[],
+				fguize:[]
+			},
+			methods: {
+				haverule:function(type){
+					// 获取价格
+					var that = this
+					$.ajax({
+						type: "POST",
+						url: url_url + "/user/selectSmAdvertisementRule",
+						dataType: 'json',
+						async: true,
+						data:{
+							type:type
+						},
+						success: function(res) {
+							that.fguize = res.data
+						},
+						error: function(res) {
+					
+						}
+					})
+				},
+				diquchange:function(){
+					// 地区改变查询市场
+					var that = this
+					$.ajax({
+						type: "POST",
+						url: url_url + "/user/selectSmAdvertisementMarket",
+						dataType: 'json',
+						async: true,
+						data:{
+							smAdvertisementAddressId:that.diquid
+						},
+						success: function(res) {
+							that.shicahngdata = res.data
+							that.haverule(2)
+						},
+						error: function(res) {
+					
+						}
+					})
+				},
+				yijicahnge:function(){
+					// 一级改变查询二级
+					var that = this
+					$.ajax({
+						type: "POST",
+						url: url_url + "/user/selectSmShopTypeTwo",
+						dataType: 'json',
+						async: true,
+						data:{
+							smStPpid:that.yijiid
+						},
+						success: function(res) {
+							that.erjidata = res.data
+							that.haverule(3)
+						},
+						error: function(res) {
+					
+						}
+					})
+				},
+				maishou: function(type,smAcPrice, smAcTime, smAdvertisementRuleId,smAdvertisementType) {
+					var that = this
+					that.mytype = type
+					that.smAcPrice = smAcPrice
+					that.smAcTime = smAcTime
+					that.smAdvertisementRuleId = smAdvertisementRuleId
+					that.smAdvertisementType = smAdvertisementType
+					that.paysl()
+				},
+				// 购买首页轮播图广告
+				paysl: function() {
+					var that = this
+					var price = mui.prompt('价格越高您的排名越靠前', '起步价' + this.smAcPrice, '广告金额', ['取消', '确认'], function(e) {
+						if (e.index == 1) {
+							if (e.value == '' || e.value <= 0 || e.value < that.smAcPrice) {
+								mui.toast('金额过低')
+								return false;
+							}
+							that.shijiprice = e.value
+							var btnArray = [{
+								title: "余额"
+							}, {
+								title: "支付宝"
+							}, {
+								title: "微信"
+							}]; //选择按钮  1 2 3
+							plus.nativeUI.actionSheet({
+								title: "请选择支付方式",
+								cancel: "取消",
+								buttons: btnArray
+							}, function(e) {
+								var index = e.index;
+								switch (index) {
+									case 1:
+										if (that.mytype == 3) {
+											that.pay(0, '/merchant/buyMerchantAdvertisement'); //轮播图广告
+										} else if (that.mytype == 1) {
+											that.pay(0, '/merchant/buyMerchantAdvertisement'); //首页广告区广告
+										}else if(that.mytype == 2){
+											that.pay(0, '/merchant/buyMerchantAdvertisement'); //分类广告
+										}
+
+										break;
+									case 2:
+										if (that.mytype == 3) {
+											that.pay(1, '/merchant/payMerchantAdvertisement'); //轮播图广告
+										}else if (that.mytype == 1) {
+											that.pay(1, '/merchant/payMerchantAdvertisement'); //首页广告区广告
+										}else if(that.mytype == 2){
+											that.pay(1, '/merchant/payMerchantAdvertisement'); //分类广告
+										}
+										
+										break;
+									case 3:
+										if (that.mytype == 3) {
+											that.pay(2, '/merchant/payMerchantAdvertisement');//轮播图广告
+										}else if (that.mytype == 1) {
+											that.pay(2, '/merchant/payMerchantAdvertisement'); //首页广告区广告
+										}else if(that.mytype == 2){
+											that.pay(2, '/merchant/payMerchantAdvertisement'); //分类广告
+										}
+										
+										break;
+								}
+							});
+						} else {
+							$('.mui-popup').hide()
+							$('.mui-popup-backdrop').hide()
+						}
+					}, 'div')
+				},
+				pay: function(type, url) {
+					var that = this
+					var ajaxjson = {
+						smAdvertisementRuleId: that.smAdvertisementRuleId, //广告主键
+						smMerchantId: localStorage.getItem('smMerchantId'), //商户主键
+						smAmPrice: that.shijiprice,
+						time: that.smAcTime,
+						smBaImg: that.mysrc,
+						state: type,
+						smAdvertisementAddressId:that.diquid,//地区id
+						smAdvertisementMarketId:that.shichangid,//市场id
+						smShopTypeIdOne:that.yijiid,//一级id
+						smShopTypeIdTwo:that.erjiid,//二级id,
+						smAdvertisementType:that.smAdvertisementType,
+						smAdvertisementPriceRuleId:that.smAdvertisementRuleId,
+						smAmType:that.mytype
+					}
+					console.log(url_url + url)
+					$.ajax({
+						type: "POST",
+						url: url_url + url,
+						dataType: 'json',
+						data: ajaxjson,
+						success: function(res) {
+							console.log("ajaxjson: " + JSON.stringify(ajaxjson));
+							console.log("res: " + JSON.stringify(res));
+							if (type == 0) {
+								// 余额支付
+								if (res.status == 200) {
+									mui.toast('购买成功')
+								} else {
+									alert(res.msg)
+								}
+							} else if (type == 1) {
+								// 支付宝支付
+								plus.payment.request(that.channel[0], res.data[0], function(result) {
+									mui.toast('购买成功')
+								}, function(error) {
+									alert('支付失败！'+JSON.stringify(error))
+								});
+							} else {
+								plus.payment.request(that.channel[1], res, function(result) {
+									mui.toast('购买成功')
+								}, function(error) {
+									alert('支付失败！'+JSON.stringify(error))
+								});
+							}
+						},
+						error: function(res) {
+							console.log("ajaxjsonerr: " + JSON.stringify(ajaxjson));
+							alert(JSON.stringify(res))
+						}
+					})
+				},
+				topchange: function(index) {
+					this.topindex = index
+				},
+				myajax: function() {
+					var that = this
+					// 查看首页广告区规则
+					$.ajax({
+						type: "POST",
+						url: url_url + "/merchant/querysmAdvertisementRule",
+						dataType: 'json',
+						async: true,
+						success: function(res) {
+							that.sguize = res.data[0]
+						},
+						error: function(res) {
+
+						}
+					})
+					// 					查看首页轮播图规则
+					$.ajax({
+						type: "POST",
+						url: url_url + "/user/selectSmAdvertisementRule",
+						dataType: 'json',
+						async: true,
+						data:{
+							type:5
+						},
+						success: function(res) {
+							that.slguize = res.data[0]
+						},
+						error: function(res) {
+
+						}
+					})
+					// 					查询一级分类
+					$.ajax({
+						type: "POST",
+						url: url_url + "/user/selectSmShopTypeOne",
+						dataType: 'json',
+						async: true,
+						success: function(res) {
+							that.yijidata = res.data
+						},
+						error: function(res) {
+					
+						}
+					})
+					// 					查询地址 
+					$.ajax({
+						type: "POST",
+						url: url_url + "/user/selectSmAdvertisementAddress",
+						dataType: 'json',
+						async: true,
+						success: function(res) {
+							that.diqudata = res.data
+						},
+						error: function(res) {
+					
+						}
+					})
+				},
+				upload: function(type, smAcPrice, smAcTime, smAdvertisementRuleId,smAdvertisementType) {
+					var that = this
+					that.mytype = type
+					that.smAcPrice = smAcPrice
+					that.smAcTime = smAcTime
+					that.smAdvertisementRuleId = smAdvertisementRuleId
+					that.smAdvertisementType = smAdvertisementType
+					var btnArray = [{
+						title: "照相机"
+					}, {
+						title: "相册"
+					}]; //选择按钮  1 2 3
+					plus.nativeUI.actionSheet({
+						title: "请上传轮播图",
+						cancel: "取消",
+						buttons: btnArray
+					}, function(e) {
+						var index = e.index;
+						switch (index) {
+							case 1:
+								that.camera();
+								break;
+							case 2:
+								that.album();
+								break;
+						}
+					});
+				},
+				camera: function() {
+					//				相机
+					var that = this
+					var cmr = plus.camera.getCamera();
+					cmr.captureImage(function(p) {
+						//成功
+						plus.io.resolveLocalFileSystemURL(p, function(entry) {
+							var img_name = entry.name;
+							var img_path = entry.toLocalURL();
+							that.upload_img(img_path)
+						}, function(e) {
+							alert("读取拍照文件错误：" + e.message);
+						});
+
+					}, function(e) {
+						alert("失败：" + e.message);
+					}, {
+						filename: '_doc/camera/',
+						index: 1
+					});
+				},
+				album: function() {
+					//				相册
+					var that = this
+					plus.gallery.pick(function(path) {
+						that.upload_img(path);
+					}, function(e) {
+						alert("取消选择图片");
+					}, {
+						filter: "image"
+					});
+				},
+				upload_img: function(p) {
+					var thats = this
+					var img = new Image();
+					img.src = p; // 传过来的图片路径在这里用。
+					img.onload = function() {
+						var that = this;
+						//生成比例 
+						var w = that.width,
+							h = that.height,
+							scale = w / h;
+						w = 480 || w; //480  你想压缩到多大，改这里
+						h = w / scale;
+
+						//生成canvas
+						var canvas = document.createElement('canvas');
+						var ctx = canvas.getContext('2d');
+						$(canvas).attr({
+							width: w,
+							height: h
+						});
+						ctx.drawImage(that, 0, 0, w, h);
+						$.ajax({
+							type: 'post',
+							url: url_url + '/merchant/uploadBanner',
+							data: {
+								imgStr: canvas.toDataURL('image/jpeg', 1 || 0.8)
+							},
+							success: function(res) {
+								if (res.status == 200) {
+									thats.mysrc = res.data
+									thats.paysl()
+								} else {
+									alert(res.msg)
+								}
+							},
+							error: function(res) {
+								alert('网络连接失败，请检查网络后再试！')
+							}
+						})
+					}
+				}
+			},
+			mounted: function() {
+				this.myajax()
+				var that=this
+				// 1. 获取支付通道
+				function plusReady() {
+					// 获取支付通道
+					plus.payment.getChannels(function(channels) {
+						that.channel = channels;
+					}, function(e) {
+						alert("获取支付通道失败：" + e.message);
+					});
+				}
+				if (window.plus) {
+					plusReady();
+				} else {
+					document.addEventListener('plusready', plusReady, false);
+				}
+			},
+			filters:{
+				mytype:function(value){
+					if(value==1){
+						return '市场分类'
+					}else if(value==2){
+						return '地区分类'
+					}else if(value==3){
+						return '一级分类'
+					}
+					else if(value==4){
+						return '二级分类'
+					}
+					else if(value==5){
+						return '市场轮播分类'
+					}
+					else if(value==6){
+						return '地区轮播分类'
+					}
+					else if(value==7){
+						return '二级分类轮播'
+					}
+					else if(value==8){
+						return '一级分类轮播'
+					}
+					else if(value==9){
+						return '首页轮播'
+					}
+				}
+			}
+		})
+	</script>
+</html>

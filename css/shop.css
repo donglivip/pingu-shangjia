@@ -1,0 +1,166 @@
+*{
+	margin: 0;padding: 0;font-size: .26rem;
+}
+a{text-decoration: none;}
+html,body,.wrapper{width: 100%;height: 100%;}
+.wrapper{
+	background: #F5F5F5;
+}
+.header{
+	 background: linear-gradient(45deg,#FF7552,#FC4149);
+	height: 2.6rem;
+}
+.header-box{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+}
+i{
+	font-size: 0.4rem !important;
+	color: #333333;
+	height: .4rem;
+    margin-top: .24rem;
+}
+.header-content{
+	font-size: .34rem;
+	color: #FFFFFF;
+	margin-top:.24rem ;
+}
+.header-aside{
+margin-right: 20px;
+    color: #ffffff;
+}
+.header-bottom{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.header-left{
+	margin:.24rem;
+}
+.header-left img{
+	width: 1.26rem;
+	height: 1.26rem;
+	border-radius: 50%;	
+	border: 2px solid gainsboro;
+}
+.header-right{
+	flex: 1;
+}
+.header-text{
+	font-size: .36rem;
+	color: #FFFFFF;
+	margin-left: .04rem;
+}
+.main{
+	height: calc(100% - 3.68rem);
+	flex: 1;
+}
+.main-container{
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	background: #FFFFFF;	
+}
+.main-box{
+	flex: 1;
+	height: 1.42rem;
+    display: flex;
+    flex-direction:column ;
+    align-items: center;
+    border-bottom: 1px solid #F5F5F5;
+    border-right:1px solid #F5F5F5;
+}
+.main-box:nth-of-type(3){
+	border: 0;
+}
+.main-number{
+	font-size: .36rem;
+	margin-top: .24rem;
+}
+.main-Visitor{
+	font-size: .28rem;
+	margin-top: .08rem;
+}
+.main-Administration{
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	background: #FFFFFF;	
+	margin: .16rem 0;
+}
+.main-status{
+	display: flex;
+    flex-direction:column;
+    align-items: center;
+    height: 1.26rem;
+    flex: 1;
+}
+.main-status img{
+	height: .4rem;
+	margin-top: .24rem;
+}
+.main-my{
+	font-size: .2rem;
+	margin-top: .15rem;
+}
+
+.main-type{
+    background: #FFFFFF;
+	margin: .25rem 0;
+}
+.main-tips{
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	border-bottom: 1px solid #F5F5F5;
+	height: .96rem;
+}
+.main-tips img{
+	height: .36rem;
+	margin-left: .25rem;
+}
+.main-classification{
+	font-size: .28rem;
+	color: #333333;
+	margin-left: .12rem;
+}
+.bottom{
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	background: #FFFFFF;
+	height:1.08rem ;
+}
+.bottom-box{
+	display: flex;
+	flex-direction:column ;
+	align-items: center;	
+}
+.bottom-box img{
+	height: .38rem;
+}
+.bottom-text{
+	.2rem
+}
+
+.bottom-news{
+	font-size: .2rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

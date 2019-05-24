@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/Put-forward.css" />
+		<script type="text/javascript" src="js/dui.js"></script>
+		<script type="text/javascript" src="js/mui.js"></script>
+		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-aside">
+					<img src="img/block-left.png" class="mui-action-back" />
+
+				</div>
+				<div class="header-content">余额提现</div>
+				<div class="header-aside" style="color: #FFFFFF;"></div>
+			</div>
+			<div class="main">
+				<div class="main-tab">
+					<div class="main-text">可提现金额</div>
+					<div class="main-number" id="yajin_money">￥66</div>
+					<input class="main-word" type="number" placeholder="请输入提现金额" />
+				</div>
+				<div class="main-bottom">
+					<div class="main-news">提现到</div>
+					<div class="main-news">支付宝</div>
+				</div>
+				<div class="main-confirm">确认提现</div>
+				<div class="main-Percentage">提现扣除手续费<span class="shou">0.1</span>%</div>
+			</div>
+		</div>
+	</body>
+	<script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/mui.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		$(function() {
+			//			获取钱包余额
+			var wallet
+			$.ajax({
+				type: "post",
+				url: url_url + "/merchant/queryMerchantWallet",
+				dataType: 'json',
+				async: true,
+				data: {
+					smMerchantId: localStorage.getItem('smMerchantId')
+				},
+				success: function(res) {
+					wallet = res.data;
+					$('#yajin_money').text('￥' + wallet.smMwPrice);
+				},
+				error: function(err) {
+					console.log(err);
+				}
+			});
+			//			获取提现规则
+			$.ajax({
+				type: "post",
+				url: url_url + "/merchant/querySmWithdrawCash",
+				dataType: 'json',
+				async: true,
+				data: {
+					smMerchantId: localStorage.getItem('smMerchantId')
+				},
+				success: function(res) {
+					$('.shou').text(res.data.smWcrServiceCharge);
+				},
+				error: function(err) {
+					console.log(err);
+				}
+			});
+//			确认提现
+			$('.main-confirm').click(function() {
+				var price =$('.main-word').val()
+				if(price <=0||price=='') {
+					alert('金额错误')
+					return false;
+				}
+				if((price + price * $('.shou').val()/100) > wallet.smMwPrice) {
+					alert('余额不足')
+					return false;
+				}
+				$.ajax({
+					type: "post",
+					url: url_url + "/user/merchantCashWithdrawal",
+					dataType: 'json',
+					async: true,
+					data: {
+						smMerchantId: localStorage.getItem('smMerchantId'),
+						price:price,
+						withdrawPrice:price * $('.shou').val()/100,
+						state:1
+					},
+					success: function(res) {
+						if(res.status==200){
+							mui.toast('提现成功')
+						}else{
+							alert(res.msg)
+						}
+					},
+					error: function(err) {
+						console.log(err);
+					}
+				});
+			})
+		});
+	</script>
+
+</html>

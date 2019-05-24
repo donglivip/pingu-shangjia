@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/freight.css" />
+		<link rel="stylesheet" type="text/css" href="css/mui.css" />
+		<link href="css/mui.picker.css" rel="stylesheet" />
+		<link href="css/mui.poppicker.css" rel="stylesheet" />
+		<style>
+			.noPost {
+				display: none;
+			}
+			
+			.noPost p {
+				height: 0.96rem;
+				background: #fff;
+				padding: 0.24rem;
+				font-size: 0.26rem;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="wrapper newrule">
+			<div class="header">
+				<div class="heade-aside mui-action-back">
+					返回
+				</div>
+				<div class="hedaer-center">
+					运费模板设置
+				</div>
+				<div class="heade-aside" id="saveTemp">
+					保存
+				</div>
+			</div>
+			<div class="main">
+				<input type="text" id="name" placeholder="模板名称" />
+				<input type="text" id="city" placeholder="发货地" />
+				<input type="text" id="time" placeholder="发货时间：xx点前" readonly="readonly" />
+				<div class="main-switch isdefultRule">
+					<p>是否设为默认</p>
+					<div class="mui-switch mui-switch-blue mui-switch-mini" id="isDefault">
+						<div class="mui-switch-handle"></div>
+					</div>
+				</div>
+				<div class="main-switch isdefultRule">
+					<p>是否包邮</p>
+					<div class="mui-switch mui-switch-blue mui-switch-mini" id="isFree">
+						<div class="mui-switch-handle"></div>
+					</div>
+				</div>
+				<div class="nav-box">
+					<div class="nav left active">
+						自定义运费
+					</div>
+					<div class="nav right">
+						卖家包运费
+					</div>
+				</div>
+				<!-- <div class="diyPost">
+					<div class="addNew">
+						<i class="iconfont icon-tianjia"></i>
+					</div>
+				</div> -->
+				<div class="noPost">
+					<p>
+						该商品运费由卖家承担。
+					</p>
+				</div>
+				<!--判断是否包邮-->
+				<input type="hidden" class="isfree" />
+			</div>
+		</div>
+	</body>
+	<script src="js/mui.js"></script>
+	<script src="js/mui.picker.js"></script>
+	<script src="js/mui.poppicker.js"></script>
+	<script src="js/jquery-2.1.0.js"></script>
+	<script src="js/url.js"></script>
+	<script src="js/time.js"></script>
+	<script src="js/city.data-3.js"></script>
+	<script type="text/javascript">
+		function opennew(target) {
+			mui.openWindow({
+				url: target + '.html',
+				id: target
+			})
+		};
+		mui.init({               
+			beforeback: function() {　　　　                            
+				var list = plus.webview.getWebviewById('freight');　　　　                  
+				mui.fire(list, 'refresh');                  
+				return true;               
+			}            
+		});
+
+		function back() {
+			var list = plus.webview.getWebviewById('freight');　　　　                  
+			mui.fire(list, 'refresh'); 
+		}
+
+		(function($, doc) {
+			$.init();
+			$.ready(function() {
+				var cityPicker3 = new $.PopPicker({
+					layer: 3
+				});
+				cityPicker3.setData(cityData3);
+				var showCityPickerButton = doc.getElementById('city');
+				showCityPickerButton.addEventListener('tap', function(event) {
+					cityPicker3.show(function(items) {
+						doc.getElementById('city').value = ((items[0] || {}).text + (items[1] || {}).text + (items[2] || {}).text);
+					});
+				}, false);
+			});
+		})(mui, document);
+
+		(function($, doc) {
+			$.init();
+			$.ready(function() {
+				var cityPicker3 = new $.PopPicker({
+					layer: 1
+				});
+				cityPicker3.setData(timeData);
+				var showCityPickerButton = doc.getElementById('time');
+				showCityPickerButton.addEventListener('tap', function(event) {
+					cityPicker3.show(function(items) {
+						doc.getElementById('time').value = ((items[0] || {}).text);
+					});
+				}, false);
+			});
+		})(mui, document);
+
+		$(function() {
+			// $('.right').click(function() {
+			// 	$('.isfree').val('2');
+			// 	$('.diyPost').hide();
+			// 	$('.left').removeClass('active');
+			// 	$('.noPost').show();
+			// 	$(this).addClass('active');
+			// });
+			// $('.left').click(function() {
+			// 	$('.isfree').val('1');
+			// 	$('.noPost').hide();
+			// 	$('.right').removeClass('active');
+			// 	$('.diyPost').show();
+			// 	$(this).addClass('active');
+			// });
+			$('body').on('click', '.editFee', function() {
+				let smExpressFeeId = $(this).parent().data('id');
+				//页面跳转 传参
+				mui.openWindow({
+					url: 'settrule.html',
+					id: 'settrule',
+					extras: {
+						feeId: smExpressFeeId
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			});
+			//  删除  
+			$('body').on('click', '.deleteFee', function() {
+				let smExpressFeeId = $(this).parent().data('id');
+				let smEfUpdateName = localStorage.getItem('smMerchantId');
+
+				$.ajax({
+					type: "post",
+					url: url_url + '/merchant/deleteExpressFee',
+					async: true,
+					data: {
+						smExpressFeeId: smExpressFeeId,
+						smEfUpdateName: smEfUpdateName
+					},
+					success: function(res) {
+						console.log(JSON.stringify(res));
+
+						location.reload();
+					},
+					error: function(err) {
+						console.log(JSON.stringify(err));
+					}
+				});
+			})
+
+			document.getElementById("isFree").addEventListener("toggle", function(event) {
+				if(event.detail.isActive) {
+					$('.diyPost').hide();
+					$('.left').removeClass('active');
+					$('.noPost').show();
+					$('.right').addClass('active');
+				} else {
+					$('.noPost').hide();
+					$('.right').removeClass('active');
+					$('.diyPost').show();
+					$('.left').addClass('active');
+				}
+			})
+
+		});
+
+		mui.plusReady(function() {
+			//获取页面跳转 传的 运费模版ID
+			var value = plus.webview.currentWebview().TemplateId;
+			var smMerchantId = localStorage.getItem('smMerchantId');
+			console.log(value)
+			localStorage.setItem('existAdress', null)
+			if(value) {
+				let ruleHtml = '';
+				let arr = [];
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/queryExpressInfo",
+					async: true,
+					data: {
+						smExpressTemplateId: value
+					},
+					success: function(res) {
+						$('#name').val(res.data[0].smEtName);
+						$('#city').val(res.data[0].smEtAddress);
+						$('#time').val(res.data[0].smEtTime);
+						if(res.data[0].smEtIsDefault == 1) {
+							mui("#isDefault").switch().toggle();
+						}
+						if(res.data[0].smEtIsStyle == 2) {
+							mui("#isFree").switch().toggle();
+						}
+						for(var i = 0; i < res.data.length; i++) {
+							if(res.data[i].smEfIsDelete == 2) {
+								var adress = JSON.parse(res.data[i].smEfAddress);
+
+								arr += adress + ',';
+
+								console.log(arr);
+								var bb = arr.split(',').slice(0, -1);
+
+								localStorage.setItem('existAdress', bb);
+
+								ruleHtml += `
+								  <section class="freCard">
+										<div>
+											<span class="leftSpan">省份:</span>
+											<div style="display: inline-block;width: 80%;">
+				                                 ${adress}
+											</div>
+										</div>
+										<div>
+											<span class="leftSpan">首件:</span><span>${res.data[i].smEfDefaultNum}件</span>;&nbsp;&nbsp;&nbsp;&nbsp;<span class="leftSpan">运费:</span><span>${res.data[i].smEfDefaultPrice}元</span>; &nbsp;&nbsp;&nbsp;&nbsp;
+											<span class="leftSpan">续件:</span><span>${res.data[i].smEfAddNum}件</span>;&nbsp;&nbsp;&nbsp;&nbsp;<span class="leftSpan">续费:</span><span>${res.data[i].smEfAddPrice}元</span>
+										</div>
+										<div class="freBtn" data-id=${res.data[i].smExpressFeeId}>
+											<p class="editFee">修改</p>
+											<p class='deleteFee'>删除</p>
+										</div>
+									</section>
+								`;
+							}
+
+						}
+						$('.diyPost').prepend(ruleHtml);
+					},
+					error: function(err) {
+
+					}
+				});
+
+				//          是否默认 点击切换
+				document.getElementById("isDefault").addEventListener("toggle", function(event) {
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/queryExpressInfo",
+						async: true,
+						data: {
+							smExpressTemplateId: value
+						},
+						success: function(res) {
+
+							if(!event.detail.isActive && res.data[0].smEtIsDefault == 1) {
+								mui.alert('当前为默认不能取消！');
+								mui("#isDefault").switch().toggle();
+							} else {
+								$.ajax({
+									type: "post",
+									url: url_url + "/merchant/updateExpressDefault",
+									async: true,
+									data: {
+										smExpressTemplateId: value,
+										smMerchantId: smMerchantId
+									},
+									success: function(res) {
+										console.log(JSON.stringify(res))
+									},
+									error: function(err) {
+
+									}
+								});
+							}
+						},
+						error: function(err) {
+
+						}
+					});
+
+				});
+
+			}
+			// 添加规则
+			$('.addNew').click(function() {
+				var name = $('#name').val();
+				var city = $('#city').val();
+				var time = $('#time').val();
+				if(name == '' || city == '' || time == '') {
+					alert('请先填写完整内容!');
+					return false;
+				}
+				//页面跳转 传参
+				mui.openWindow({
+					url: 'settrule.html',
+					id: 'settrule',
+					extras: {
+						name: name,
+						city: city,
+						time: time,
+						tempId: value
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+
+			});
+
+			//修改运费模版  保存
+			$('#saveTemp').click(function() {
+				var smEtIsStyle = null;
+				var smEtIsDefault = null;
+				var smMerchantId = localStorage.getItem('smMerchantId');
+				var smEtName = $('#name').val();
+				var smEtAddress = $('#city').val();
+				var smEtTime = $('#time').val();
+				// 判断是否自定义包邮两者都无
+				var isempty = null;
+				var isFree = document.getElementById("isFree").classList.contains("mui-active");
+				if(isFree) {
+					isempty = 2;
+				} else {
+					isempty = 1;
+				}
+
+				if(!$('.freCard').html() && isempty == 1) {
+					'填写自定义'
+				}
+				if(smEtName == '' || smEtAddress == '' || smEtTime == '') {
+					mui.toast('请将内容填写完整');
+					return false;
+				}
+				if(value) {
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/updateExpressTemplate",
+						async: true,
+						data: {
+							smExpressTemplateId: value,
+							smEtName: smEtName,
+							smEtAddress: smEtAddress,
+							smEtTime: smEtTime,
+							smEtIsStyle: isempty
+
+						},
+						success: function(res) {
+							console.log(JSON.stringify(res.msg))
+							if(res.status == 200) {
+								<!-- mui.back(); -->
+							} else {
+								console.log(JSON.stringify(res.msg))
+								mui.toast(res.msg)
+							}
+						},
+						error: function(err) {
+							mui.toast(err.msg)
+						}
+					});
+				} else {
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/insertExpress",
+						async: true,
+						data: {
+							smMerchantId: smMerchantId,
+							smEtName: smEtName,
+							smEtAddress: smEtAddress,
+							smEtTime: smEtTime,
+							smEtIsStyle: 2
+						},
+						success: function(res) {
+							mui.back();
+						},
+						error: function(err) {
+
+						}
+					});
+				}
+
+			})
+
+		})
+
+		window.addEventListener('customEvent', function(event) {
+			location.reload();
+		});
+	</script>
+
+</html>

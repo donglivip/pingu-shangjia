@@ -1,0 +1,138 @@
+*{
+	margin: 0;padding: 0;font-size: .26rem;
+}
+.wrapper{
+	background: #FFFFFF;
+}
+.header{
+	height: .8rem;
+	display: flex;
+	align-items:center;
+	justify-content: space-between;
+	background: #D61A0A;
+}
+.header-aside{
+	display: flex;
+	align-items:center;
+	justify-content: center;
+	width: .3rem;
+	margin: .24rem;
+}
+.header-aside img{
+	height: .36rem;
+	
+}
+.header-content{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #FFFFFF;
+	font-size: .34rem;
+}
+.main{
+	overflow-x:hidden ;
+	overflow-y: scroll;
+	height: calc(100% - .8rem);
+}
+.main-trademark{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 1.8rem;
+	border-bottom: 1px solid #F4F4F4 ;
+}
+.main-trademark img{
+	height: 1.2rem;
+	border-radius: 1rem;
+	margin: .4rem .24rem.4rem 0;
+}
+.main-text{
+	font-size: .28rem;
+	color: #333333;
+	margin: .24rem;
+}
+textarea{
+	width: 6.5rem;
+	height: 1.6rem;
+	margin-left: 0.3rem;
+	border: 3px solid #F4F4F4 ;
+	padding: .2rem;
+	box-sizing: border-box;
+	outline: none;
+}
+.main-Name{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 1rem;
+	border-bottom: 1px solid #F4F4F4 ;
+}
+.main-news{
+	font-size: .28rem;
+	color: #A2A2A2;
+	margin:.3rem .24rem;
+}
+.main-introduction{
+	height: 2.66rem;
+	border-bottom: 1px solid #F4F4F4 ;
+}
+.main-Merchante{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: .9rem;
+	border-bottom: 1px solid #F4F4F4 ;
+}
+.main-Merchante img{
+	height: .27rem;
+	margin: .3rem .24rem .3rem .14rem;
+}
+.main-tab{
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	flex: 1;
+	font-size: .28rem;
+	color: #333333;	
+}
+.main-Photo{
+	height: 3.58rem;
+	margin: .3rem .24rem .3rem .14rem;
+	border-bottom: 1px solid #F4F4F4 ;
+}
+.main-Photo img{
+	height: 2.46rem;
+	margin-top: .24rem ;
+	margin-left: 25%;
+}
+
+.main-Submission {
+	text-align: center;
+	font-size: .34rem;
+	color: #FFFFFF;
+	padding: .3rem 0;
+	background: #D61A0A;
+	border-radius: 1rem;
+	margin: 1.2rem 0.5rem 0.5rem 0.5rem;
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

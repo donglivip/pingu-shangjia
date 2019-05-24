@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/logistics.css" />
+		<script type="text/javascript" src="js/dui.js"></script>
+		<script type="text/javascript" src="js/mui.js"></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-aside mui-action-back">
+					<img src="img/block-left.png" />
+				</div>
+				<div class="header-content">物流状态</div>
+				<div class="header-aside"></div>
+			</div>
+			<div class="main">
+				<div class="main-time">2018-7-18 15:30</div>
+				<div class="main-box">
+					<div class="main-tab">
+						<div class="main-text">您售卖的宝贝已签收 </div>
+					</div>
+					<div class="main-bottom">
+						<div class="main-left">
+							<img src="img/1 (1).jpg" />
+						</div>
+						<div class="main-right">
+							<div class="main-news">已签收，您在售卖的XXXXXXXXXXXXXXXX已签收</div>
+						</div>
+					</div>
+				</div>
+				<div class="main-time">2018-7-18 15:30</div>
+				<div class="main-box">
+					<div class="main-tab">
+						<div class="main-text">您售卖的宝贝已签收 </div>
+					</div>
+					<div class="main-bottom">
+						<div class="main-left">
+							<img src="img/1 (1).jpg" />
+						</div>
+						<div class="main-right">
+							<div class="main-news">已签收，您在售卖的XXXXXXXXXXXXXXXX已签收</div>
+						</div>
+					</div>
+				</div>
+				<div class="main-time">2018-7-18 15:30</div>
+				<div class="main-box">
+					<div class="main-tab">
+						<div class="main-text">您售卖的宝贝已签收 </div>
+					</div>
+					<div class="main-bottom">
+						<div class="main-left">
+							<img src="img/1 (1).jpg" />
+						</div>
+						<div class="main-right">
+							<div class="main-news">已签收，您在售卖的XXXXXXXXXXXXXXXX已签收</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script src="js/jquery-2.1.0.js"></script>
+		<script src="js/url.js"></script>
+		<script>
+						mui.plusReady(function() {  
+			              var value = plus.webview.currentWebview().typeId;  
+			              var smUserId = localStorage.getItem('smMerchantId');
+			              $.ajax({
+			              	type:"post",
+			              	url:url_url+"/merchant/queryMessageList",
+								data: {
+									'smUserId': smUserId,
+									'type':value
+								},
+								success:function(data){
+									 console.log(JSON.stringify(data));
+									 var list = data.data;
+									 for(var i = 0;i<list.length;i++){
+									 }
+								},
+								error:function(err){
+									alert(err.status)
+								}
+			              });
+			          });
+		</script>
+	</body>
+
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/shop.css" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+		<script type="text/javascript" src="js/mui.js"></script>
+		<script type="text/javascript" src="js/dui.js"></script>
+		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-container">
+					<div class="header-box">
+						<!--<div class="header-aside" id="certification" style="margin-left:15px;">商家认证</div>
+						<div class="header-content" id="btn">点匠文化专卖店</div>
+						<div class="header-aside" id="certifi">退出登录</div>-->
+						<p style=" font-size: 0.34rem;height: 0.68rem;"></p>
+					</div>
+					<div class="header-bottom">
+						<div class="header-left">
+							<img id="img_img_id" src="img/width.jpg" />
+						</div>
+						<div class="header-right">
+							<div class="header-text">XXXXXX</div>
+							<!--<div class="header-text" style=" font-size: 0.28rem;">xxxxxxxxxxxxxxxxx</div>-->
+						</div>
+						<div></div>
+					</div>
+				</div>
+			</div>
+			<div class="main-Administration">
+				<div class="main-status">
+					<img src="img/wallet.png" />
+					<div class="main-my">我的钱包</div>
+				</div>
+
+				<div class="main-status">
+					<i class="iconfont icon-mingpian"></i>
+					<div class="main-my">会员管理</div>
+				</div>
+				<div class="main-status">
+					<img src="./img/guangg.png" />
+					<div class="main-my">广告管理</div>
+				</div>
+			</div>
+			<div class="main-Administration">
+				<div class="main-status">
+					<i class="iconfont icon-pingtaishenhe"></i>
+					<div class="main-my">审核管理</div>
+				</div>
+
+				<div class="main-status">
+					<img src="img/commodity.png" />
+					<div class="main-my">商品管理</div>
+				</div>
+				<div class="main-status">
+					<i class="iconfont icon-tianjia"></i>
+					<div class="main-my">添加商品</div>
+				</div>
+			</div>
+			<div class="main-type">
+				<div class="main-tips">
+					<img src="img/Setup.png" />
+					<div class="main-classification">店铺设置</div>
+				</div>
+				<div class="main-tips">
+					<i class="iconfont icon-kuaidihuoyun" style="margin-left: 0.25rem;margin-top: 0;"></i>
+					<div class="main-classification">运费设置</div>
+				</div>
+				<!--<div class="main-tips">
+					<img src="img/about.png" />
+					<div class="main-classification">关于我们</div>
+				</div>-->
+				<a class="main-tips" href='tel:18952168237'>
+					<img src="img/Customer.png" />
+					<div class="main-classification">官方客服</div>
+				</a>
+				<div class="main-tips">
+					<img src="img/Setup.png" />
+					<div class="main-classification">分类管理</div>
+				</div>
+			</div>
+		</div>
+		</div>
+		<script type="text/javascript" src="js/url.js"></script>
+		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+		<script>
+			var shopLogo = localStorage.getItem('smMeShopImg'); //店铺图片
+
+						$('#img_img_id').attr('src',shopLogo);
+			$('.header-text').text(localStorage.getItem('smMeShopName'))
+
+			var main_status = document.getElementsByClassName("main-status");
+			var main_tips = document.getElementsByClassName("main-tips");
+
+			//我的钱包
+			main_status[0].addEventListener("tap", function() {
+				dui.jump("My-wallet.html", "My-wallet");
+			})
+			//投诉管理
+			main_status[1].addEventListener("tap", function() {
+				dui.jump("Vip.html", "Vip");
+			})
+
+			main_status[2].addEventListener("tap", function() {
+				dui.jump("guanggao.html", "guanggao");
+			})
+
+			main_status[3].addEventListener("tap", function() {
+				dui.jump("MemberAudit.html", "MemberAudit");
+			})
+			//商品管理
+			main_status[4].addEventListener("tap", function() {
+				dui.jump("Commodity.html", "Commodity");
+			})
+
+			main_status[5].addEventListener("tap", function() {
+				dui.jump("shoping.html", "shoping");
+			})
+
+			//更换头像
+			img_img_id.addEventListener("tap", function() {
+				dui.jump("personal.html", "personal");
+			})
+
+			//店铺设置
+			main_tips[0].addEventListener("tap", function() {
+				dui.jump("personal.html", "personal");
+			})
+			//运费设置
+			main_tips[1].addEventListener("tap", function() {
+				dui.jump("freight.html", "freight");
+			})
+
+			//关于我们
+			main_tips[2].addEventListener("tap", function() {
+				dui.jump("about.html", "about");
+			})
+
+			//分类管理
+			main_tips[3].addEventListener("tap", function() {
+				dui.jump("addType.html", "addType");
+			})
+			mui.plusReady(function() {
+				document.addEventListener('shop', function() {
+					var shopLogo = localStorage.getItem('smMeShopImg'); //店铺图片
+					$('.header-text').text(localStorage.getItem('smMeShopName'))
+				})
+			})
+		</script>
+	</body>
+
+</html>

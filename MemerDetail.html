@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/refund.css" />
+		<script type="text/javascript" src="js/mui.js"></script>
+		<style>
+			
+			.main{
+				height: calc(100% - 0.8rem);
+				overflow-y: scroll;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-aside mui-action-back">
+					<img src="img/block-left.png" />
+				</div>
+				<div class="header-content">会员详情</div>
+				<div class="header-aside"></div>
+			</div>
+			<div class="main">
+				<div class="main-box">
+					<div class="main-text">姓名：<span class="number Memname"></span></div>
+				</div>
+				<div class="main-box">
+					<div class="main-text">手机号：<span class="number Memphone"></span></div>
+				</div>
+				<div class="main-box">
+					<div class="main-text">QQ号：<span class="number Memqq"></span></div>
+				</div>
+				<div class="main-box">
+					<div class="main-text">商户经营类别：<span class="number Memtype"></span></div>
+				</div>
+				<div class="main-box">
+					<div class="main-text">地址：<span class="number MemAddr"></span></div>
+				</div>
+				<div class="main-box">
+					<div class="main-text">身份证号：<span class="number MemIDcard"></span></div>
+				</div>
+				<div class="main-upload">
+					<div class="main-news">店铺图片</div>
+					<img src="img/3 (1).jpg" class="img-img logo" />
+				</div>
+				<div class="main-upload">
+					<div class="main-news">身份证正面照</div>
+					<img src="img/3 (1).jpg" class="img-img face-img" />
+				</div>
+				<div class="main-upload">
+					<div class="main-news">身份证反面照</div>
+					<img src="img/3 (1).jpg" class="img-img back-img" />
+				</div>
+			</div>
+		</div>
+		<script src="js/jquery-2.1.0.js"></script>
+		<script src="js/url.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function() {
+				var value = plus.webview.currentWebview().MemberId;
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/queryMemberMessage",
+					async: true,
+					data: {'smApplyMemberId':value},
+					success: function(res) {
+                          console.log(JSON.stringify(res));
+                          let member = res.data;
+                          $('.Memname').text(member.smUsNickname);
+                          $('.Memphone').text(member.smUsPhone);
+                          $('.Memqq').text(member.smAmQq);
+                          $('.Memtype').text(member.smStName);
+                          $('.MemAddr').text(member.smAmAddress);
+                          $('.MemIDcard').text(member.smUsCardNo);
+                          $('.logo').attr('src',member.smAmShopLogo)
+                          $('.face-img').attr('src',member.smUsCardFrontImg)
+                          $('.back-img').attr('src',member.smUsCardBackImg)
+					},
+					error: function(err) {
+                          console.log(err);
+					}
+				});
+			});
+		</script>
+	</body>
+
+</html>

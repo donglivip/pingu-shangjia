@@ -1,0 +1,267 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+		<script type="text/javascript" src="js/mui.js"></script>
+		<script type="text/javascript" src="js/rem.js"></script>
+		<link rel="stylesheet" href="css/Commodity.css" />
+		<link rel="stylesheet" href="css/como.css" />
+		<style type="text/css">
+			.mui-card .mui-control-content {
+				padding: 10px;
+			}
+
+			.mui-scroll-wrapper {
+				position: absolute;
+				z-index: 2;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				overflow: scroll;
+				width: 100%;
+			}
+
+			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
+				color: #fff;
+				font-size: 0.3rem;
+				border-bottom: 0;
+			}
+
+			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item {
+				color: #fff;
+				font-size: 0.28rem;
+			}
+
+			.mui-segmented-control .mui-control-item {
+				line-height: 0.8rem;
+			}
+
+			.Commodity-item {
+				background: #fff;
+				margin-bottom: 0.16rem;
+			}
+
+			.Commodity-item img {
+				width: 1.1rem;
+			}
+
+			.item-detail {
+				display: flex;
+				justify-content: flex-start;
+				height: 1.58rem;
+				padding: 0.24rem;
+				width: 100%;
+				border-bottom: 1px solid #eaeaea;
+			}
+
+			p {
+				color: #333333;
+				margin: 0;
+			}
+
+			.item-detail div p {
+				font-size: 0.28rem;
+			}
+
+			.item-detail div p:nth-child(2) {
+				font-size: 0.24rem;
+				margin-top: 0.28rem;
+			}
+
+			.item-detail div {
+				margin-left: 0.24rem;
+			}
+
+			.item-ctrl {
+				height: 0.96rem;
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 0 0.24rem;
+			}
+
+			.item-ctrl p {
+				margin: 0;
+				color: #FC4149;
+				font-size: 0.28rem;
+			}
+
+			.item-ctrl button {
+				color: #FC4149;
+				width: 1.44rem;
+				height: 0.64rem;
+				border-radius: 100px;
+				border: 1px solid #FC4149;
+				font-size: 0.28rem;
+			}
+
+			.item-ctrl button:nth-last-child(1) {
+				margin-left: 0.48rem;
+			}
+
+			.mui-active {
+				background: #FFFFFF !important;
+				color: #D61A0A !important;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav home" style="top: 0px;">
+			<a class="mui-action-back  mui-pull-left"><img src="img/block-left.png" style="width: 25;height: 25px;margin-top:8px;" /></a>
+			<h1 class="mui-title" style="color: #FFFFFF;">商品管理</h1>
+		</header>
+		<div class="header" style="margin-top: 44px;">
+			<div>
+				<div id="segmentedControl" class="mui-segmented-control mui-segmented-control-inverted ">
+					<a class="mui-control-item mui-active" href="#item1" id="statusLeft">出售中</a>
+					<a class="mui-control-item" href="#item2" id="statusRight">已下架</a>
+				</div>
+			</div>
+		</div>
+		<div class="wrapper">
+			<div class="main mui-content">
+				<div id="item1" class="mui-control-content mui-active">
+					<div id="scroll-T1" class="mui-scroll-wrapper">
+						<div class="mui-scroll" id="Insale">
+
+						</div>
+					</div>
+				</div>
+				<div id="item2" class="mui-control-content">
+					<div id="scroll-T2" class="mui-scroll-wrapper">
+						<div class="mui-scroll" id="Offshelf">
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="js/url.js"></script>
+		<script>
+			$(function() {
+				let smMerchantId = localStorage.getItem('smMerchantId');
+				//选项卡  切换
+				CommodityList(smMerchantId, 1, '#Insale');
+				mui('body').on('tap', '#statusLeft', function() {
+					CommodityList(smMerchantId, 1, '#Insale');
+				});
+				mui('body').on('tap', '#statusRight', function() {
+					CommodityList(smMerchantId, 2, '#Offshelf');
+				});
+
+				function CommodityList(id, Shelf, ele) {
+					$.ajax({
+						type: "post",
+						url: url_url + '/merchant/querySmCommodityList',
+						async: true,
+						data: {
+							'smMerchantId': smMerchantId,
+							'smCoIsShelf': Shelf
+						},
+						success: function(res) {
+							console.log(res);
+							let goodsHtml = '';
+							let ctrlBtn = '';
+							for (let i = 0; i < res.data.length; i++) {
+								let creatDate = res.data[i].smCoCreateTime.substring(0, 10) + ' ' + res.data[i].smCoCreateTime.substring(
+									11, 19);
+								if (Shelf == 1) {
+									ctrlBtn =
+										`
+				                        <div class="item-ctrl">
+				                 		<p>出售中</p>
+				                 		<div data-id=${res.data[i].smCommodityId}>
+				                 			<button class="delete">删除</button>
+				                 			<button class="Lowershelf">下架</button>
+				                 		</div>
+				                 	</div>
+				                 </section>
+				                   `;
+								} else {
+									ctrlBtn =
+										`
+				                        <div class="item-ctrl">
+				                 		<p>已下架</p>
+				                 		<div data-id=${res.data[i].smCommodityId}>
+				                 			<button class="delete">删除</button>
+				                 			<button class="Uppershelf">上架</button>
+				                 		</div>
+				                 	</div>
+				                 </section>`
+								};
+								goodsHtml +=
+									`<section class="Commodity-item">
+				                 	<div class="item-detail">
+				                 		<img src="${res.data[i].smCoDefaultImg}" alt="" />
+				                 		<div>
+				                 			<p>${res.data[i].smCoName}</p>
+				                 			<p>创建时间：<span>${creatDate}</span></p>
+				                 		</div>
+				                 	</div>` +
+									ctrlBtn;
+							}
+							$(ele).empty();
+							$(ele).append(goodsHtml);
+						},
+						error: function(err) {
+							console.log(err);
+						}
+					});
+				};
+				$('.main').css('height', $('body').css('height'));
+				$('.mui-control-content').css('height', $('.main').css('height'));
+
+				function CtrlCommo(id, del, shelf) {
+					$.ajax({
+						type: "post",
+						url: url_url + '/merchant/updateSmCommodity',
+						async: true,
+						data: {
+							'smCommodityId': id,
+							'smCoIsDelete': del,
+							'smCoIsShelf': shelf
+						},
+						success: function(res) {
+							console.log(res);
+							if (shelf == 1) {
+								CommodityList(smMerchantId, 2, '#Offshelf');
+							} else {
+								CommodityList(smMerchantId, 1, '#Insale');
+							}
+						},
+						error: function(err) {
+
+						}
+					});
+				}
+
+				// 删除商品
+				mui('body').on('tap', '.delete', function() {
+					let id = $(this).parent().data('id');
+
+					CtrlCommo(id, 1, ' ');
+
+				});
+				//  下架
+				mui('body').on('tap', '.Lowershelf', function() {
+					let id = $(this).parent().data('id');
+					CtrlCommo(id, ' ', 2);
+
+				});
+				//  上架
+				mui('body').on('tap', '.Uppershelf', function() {
+					let id = $(this).parent().data('id');
+					CtrlCommo(id, ' ', 1);
+
+				});
+
+			})
+		</script>
+	</body>
+
+</html>

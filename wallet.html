@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/wallet.css" />
+		<script type="text/javascript" src="js/dui.js"></script>
+		<script type="text/javascript" src="js/mui.js"></script>
+		<style type="text/css">
+			.mui-content>.mui-table-view:first-child {
+				margin-top: -1px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-aside">
+					<img src="img/block-left.png" class="mui-action-back" />
+				</div>
+				<div class="header-content">明细</div>
+				<div class="header-aside"></div>
+			</div>
+		</div>
+		<!--下拉刷新容器-->
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper" style="margin-top: 45px;overflow-y: scroll;">
+			<div class="mui-scroll" id="list">
+				<!--数据列表-->
+			</div>
+		</div>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/url.js"></script>
+		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+		<script>
+			$(function() {
+				let smMerchantId = localStorage.getItem('smMerchantId');
+				let _mainHtml = '';
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/querySmMerchantFinanceList",
+					async: true,
+					data: {
+						'smMerchantId':smMerchantId
+						
+					},
+					success: function(res) {
+						console.log(JSON.stringify(res));
+						let money = res.data;
+						for(var i = 0; i < res.data.length; i++) {
+							console.log()
+							if(res.data[i].smMfStyle == 1){
+								//提现
+							_mainHtml += `
+								  <div class="main">
+									<div class="main-box">
+										<div class="main-tab">
+											<div class="main-text">收入</div>
+											<div class="main-text">+${money[i].smMfPrice}</div>
+										</div>
+										<div class="main-bottom">
+											<div class="main-news">余额：${money[i].smMfWalletPrice}</div>
+											<div class="main-news">${money[i].smMfCreateTimeString}</div>
+										</div>
+									</div>
+								</div>`;
+							}else if(res.data[i].smMfStyle == 2){
+								//提现
+								_mainHtml += `
+								  <div class="main">
+									<div class="main-box">
+										<div class="main-tab">
+											<div class="main-text">提现</div>
+											<div class="main-text">-${money[i].smMfPrice}</div>
+										</div>
+										<div class="main-bottom">
+											<div class="main-news">余额：${money[i].smMfWalletPrice}</div>
+											<div class="main-news">${money[i].smMfCreateTimeString}</div>
+										</div>
+									</div>
+								</div>`;
+							}else if(res.data[i].smMfStyle == 3){
+								//充值
+								_mainHtml += `
+								  <div class="main">
+									<div class="main-box">
+										<div class="main-tab">
+											<div class="main-text">充值</div>
+											<div class="main-text">+${money[i].smMfPrice}</div>
+										</div>
+										<div class="main-bottom">
+											<div class="main-news">余额：${money[i].smMfWalletPrice}</div>
+											<div class="main-news">${money[i].smMfCreateTimeString}</div>
+										</div>
+									</div>
+								</div>`;
+							}else if(res.data[i].smMfStyle == 4){
+								//购买
+								_mainHtml += `
+								  <div class="main">
+									<div class="main-box">
+										<div class="main-tab">
+											<div class="main-text">购买</div>
+											<div class="main-text">-${money[i].smMfPrice}</div>
+										</div>
+										<div class="main-bottom">
+											<div class="main-news">余额：${money[i].smMfWalletPrice}</div>
+											<div class="main-news">${money[i].smMfCreateTimeString}</div>
+										</div>
+									</div>
+								</div>`;
+							}else if(res.data[i].smMfStyle == 5){
+								//购买
+								_mainHtml += `
+								  <div class="main">
+									<div class="main-box">
+										<div class="main-tab">
+											<div class="main-text">退款</div>
+											<div class="main-text">-${money[i].smMfPrice}</div>
+										</div>
+										<div class="main-bottom">
+											<div class="main-news">余额：${money[i].smMfWalletPrice}</div>
+											<div class="main-news">${money[i].smMfCreateTimeString}</div>
+										</div>
+									</div>
+								</div>`;
+							}else if(res.data[i].smMfStyle == 6){
+								//缴纳
+								_mainHtml += `
+								  <div class="main">
+									<div class="main-box">
+										<div class="main-tab">
+											<div class="main-text">缴纳</div>
+											<div class="main-text">-${money[i].smMfPrice}</div>
+										</div>
+										<div class="main-bottom">
+											<div class="main-news">余额：${money[i].smMfWalletPrice}</div>
+											<div class="main-news">${money[i].smMfCreateTimeString}</div>
+										</div>
+									</div>
+								</div>`;
+							}
+							
+						}
+						
+						$('#list').append(_mainHtml);
+					},
+					error: function(err) {
+						console.log(err);
+					}
+				});
+			});
+		</script>
+	</body>
+
+</html>

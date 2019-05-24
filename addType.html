@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/freight.css" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
+		<link rel="stylesheet" href="css/mui.css" />
+		<script src="js/mui.js"></script>
+		<style>
+			.newrule input {
+				border: 0 !important;
+				border-bottom: 0 !important;
+				width: 85% !important;
+				height: .8rem !important;
+				text-indent: .2rem !important;
+				margin-bottom: 0 !important;
+				font-size: 0.26rem !important;
+				padding: 0 !important;
+			}
+			
+			.typeBox {
+				background: #fff;
+				border-bottom: 1px solid gainsboro !important;
+			}
+			
+			.deleteType {
+				padding: 0 0.2rem;
+			}
+			
+			.main {
+				margin-top: 0.24rem;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="wrapper newrule">
+			<div class="header">
+				<div class="heade-aside mui-action-back">
+					返回
+				</div>
+				<div class="hedaer-center">
+					新增分类
+				</div>
+				<div class="heade-aside addRule">
+					<span class="iconfont icon-tianjia"></span>
+				</div>
+			</div>
+			<div class="main">
+
+			</div>
+		</div>
+	</body>
+
+	<script src="js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/url.js"></script>
+	<script>
+		$(function() {
+			var smMerchantId = localStorage.getItem('smMerchantId')
+			//查询 分类
+			$.ajax({
+				type: "post",
+				url: url_url + "/merchant/querySmCommodityType",
+				async: true,
+				data: {
+					'smMerchantId': smMerchantId
+				},
+				success: function(res) {
+					console.log(res)
+					var typeHtml = ''
+					for(i in res.data) {
+						console.log(res.data[i])
+						typeHtml += `
+						 <div class="typeBox">
+					             <input type="text" class="typeName" data-id=${res.data[i].smCommodityTypeId} value=${res.data[i].smCtResult}>
+					             <span class="iconfont icon-shanchu deleteType"></span>
+				         </div>
+						`;
+					}
+					$('.main').append(typeHtml)
+				},
+				error: function(err) {
+
+				}
+			});
+
+			//新增保存
+			$('.addRule').click(function() {
+				var _this = this;
+				var btnArray = ['取消', '确定'];
+				mui.prompt('输入分类', '分类名...', '添加', btnArray, function(e) {
+					if(e.index == 1) {
+						let smCtResult = e.value;
+						let smMerchantId = localStorage.getItem('smMerchantId');
+						let smCtCreateName = localStorage.getItem('smMeCreateName');
+						console.log(smCtResult);
+						console.log(smMerchantId);
+						$.ajax({
+							type: "POST",
+							url: url_url + "/merchant/insertSmCommodityType",
+							dataType: 'json',
+							async: true,
+							data: {
+								'smMerchantId': smMerchantId,
+								'smCtResult': smCtResult,
+								'smCtCreateName': smCtCreateName
+							},
+							success: function(res) {
+								console.log(res);
+								location.reload()
+							},
+							error: function(res) {
+								alert(res.msg)
+							}
+						})
+					} else {
+
+					}
+				}, 'div')
+			})
+
+			//修改 分类
+
+			$('body').on('click', '.typeName', function() {
+				var _this = this;
+				var btnArray = ['取消', '确定'];
+				mui.prompt('修改分类', '', '修改', btnArray, function(e) {
+					if(e.index == 1) {
+						let smCtResult = e.value;
+						let smCommodityTypeId = $(_this).data('id')
+						let smCtUpdateName = localStorage.getItem('smMeUpdateName')
+						console.log(e.value)
+						console.log(smCommodityTypeId)
+						$.ajax({
+							type: "POST",
+							url: url_url + "/merchant/updateSmCommodityType",
+							dataType: 'json',
+							async: true,
+							data: {
+								'smCtResult': smCtResult,
+								'smCommodityTypeId': smCommodityTypeId,
+								'smCtUpdateName': smCtUpdateName
+							},
+							success: function(res) {
+								console.log(res);
+								location.reload()
+							},
+							error: function(res) {
+								alert('请求失败！');
+							}
+						})
+					} else {
+
+					}
+
+				}, 'div')
+				document.querySelector('.mui-popup-input input').value = $(this).val();
+			})
+
+			// 删除 分类
+			$('body').on('click', '.deleteType', function() {
+				var _this = this
+				var btnArray = ['否', '是'];
+				mui.confirm('确认删除这个分类？', '删除', btnArray, function(e) {
+					if(e.index == 1) {
+						let smCommodityTypeId = $(_this).siblings().data('id')
+						let smCtUpdateName = localStorage.getItem('smMeUpdateName')
+						console.log(smCommodityTypeId)
+						$.ajax({
+							type: "POST",
+							url: url_url + "/merchant/updateSmCommodityType",
+							dataType: 'json',
+							async: true,
+							data: {
+								'smCommodityTypeId': smCommodityTypeId,
+								'smCtUpdateName': smCtUpdateName,
+								'smCtIsDelete': 1
+							},
+							success: function(res) {
+								console.log(res);
+								location.reload()
+							},
+							error: function(res) {
+								alert('请求失败！');
+							}
+						})
+					} else {
+
+					}
+				})
+
+			})
+
+		})
+	</script>
+
+</html>

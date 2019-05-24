@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/mui.css" />
+		<script type="text/javascript" src="js/dui.js"></script>
+		<script type="text/javascript" src="js/mui.js"></script>
+		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/my.css"/>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-top">
+					<div class="header-aside mui-action-back">
+						<img src="img/block-left.png" />
+					</div>
+					<div class="header-content">广告管理</div>
+					<div class="header-news" onclick="mui.openWindow('Launch-copy.html')">投放广告</div>
+				</div>
+				<div class="classa">
+
+					<div id="segmentedControl" class="mui-segmented-control mui-segmented-control-inverted ">
+						<a class="mui-control-item mui-active" href="#item1" id="puting">投放中</a>
+						<a class="mui-control-item" href="#item2" id="expired">已过期</a>
+
+					</div>
+
+				</div>
+			</div>
+
+			<div style="height: 1.8rem;"></div>
+			<div class="main mui-content">
+
+				<div id="item1" class="mui-control-content mui-active">
+					<div id="scroll-T1" class="mui-scroll-wrapper">
+						<div class="mui-scroll" id="putingView">
+
+						</div>
+					</div>
+				</div>
+
+				<div id="item2" class="mui-control-content">
+					<div id="scroll-T2" class="mui-scroll-wrapper">
+						<div class="mui-scroll" id="expiredView">
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<script src="js/url.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				ADstatus(1, '#putingView');
+				$('.mui-control-content').css('height', $('.main').css('height'));
+				document.getElementById('puting').addEventListener('tap', function() {
+					$('#putingView').empty();
+					ADstatus(1, '#putingView');
+				});
+				document.getElementById('expired').addEventListener('tap', function() {
+					$('#expiredView').empty();
+					ADstatus(2, '#expiredView');
+				});
+
+				mui('body').on('tap', '.main-box', function() {
+//					var MiddleId = $(this).data('id');
+//					var type = $(this).data('type');
+//					mui.openWindow({
+//						url: 'AdvertiseDetail.html',
+//						id: 'AdvertiseDetail',
+//						extras: {
+//							'MiddleId': MiddleId,
+//							'type':type
+//						},
+//						waiting: {
+//							autoShow: false
+//						}
+//					});
+				})
+
+				function ADstatus(type, ele) {
+					let smMerchantId = localStorage.getItem('smMerchantId');
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/queryMyadvertise",
+						async: true,
+						data: {
+							'smMerchantId': smMerchantId,
+							'smAmType': type
+						},
+						success: function(res) {
+							var titImg = localStorage.getItem('smMeShopImg')
+							var adlist = res.data;
+							let ADname = '';
+							let ADlistHtml = '';
+							
+							let bottomBtn = '';
+
+							for(var i = 0; i < adlist.length; i++) {
+								let startTime = adlist[i].smAmCreateTime.substring(0, 10) + ' ' + adlist[i].smAmCreateTime.substring(11, 19);
+								let endTime = adlist[i].smAmTime.substring(0, 10) + ' ' + adlist[i].smAmCreateTime.substring(11, 19);
+								ADlistHtml += `
+									<div class="main-box" data-id=${adlist[i].smAdvertisementMiddleId} data-type=${adlist[i].smAmType}>
+										<div class="main-tab">
+											<div class="main-left">
+												<img src=${titImg} />
+											</div>
+											<div class="main-right">
+												<div class="main-upper">
+													<div class="main-characters">${adlist[i].name}</div>
+												</div>
+												<div class="main-lower">
+													<div class="main-number">开始时间：${startTime}</div>
+													<div class="main-number">结束时间：${endTime}</div>
+												</div>
+										</div>
+										</div>` + bottomBtn;
+							};
+
+							$(ele).append(ADlistHtml);
+
+						},
+						error: function(err) {
+							console.log(err)
+						}
+					});
+				};
+
+			});
+		</script>
+	</body>
+
+</html>

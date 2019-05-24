@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" href="css/mui.css" />
+		<script type="text/javascript" src="js/mui.js"></script>
+		<script type="text/javascript" src="js/mui.min.js"></script>
+		<link rel="stylesheet" href="css/home.css" />
+	</head>
+
+	<body>
+		<nav class="mui-bar mui-bar-tab home" id="tabBar">
+			<a class="mui-tab-item mui-active"  id="index.html">
+				<span class="mui-icon"><img src="img/xiaoxi.png"/></span>
+				<span class="mui-tab-label">消息</span>
+			</a>
+			<a class="mui-tab-item"  id="Order_receipt.html">
+				<span class="mui-icon"><img src="img/dingdan.png"/></span>
+				<span class="mui-tab-label">订单</span>
+			</a>
+			<a class="mui-tab-item"  id="shop.html">
+				<span class="mui-icon"><img src="img/dianpu.png"/></span>
+				<span class="mui-tab-label">店铺中心</span>
+			</a>
+		</nav>
+		<script type="text/javascript" src="js/dui.js"></script>
+		<!--<script type="text/javascript" src="js/home_page.js"></script>-->
+		<script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" charset="utf-8">
+			
+			mui.init({
+				subpages: [{
+						url: 'index.html',
+						id: 'index.html',
+						styles: {
+							top: '0',
+							bottom: '50px'
+						}
+					},
+					{
+						url: 'Order_receipt.html',
+						id: 'Order_receipt.html',
+						styles: {
+							top: '0',
+							bottom: '50px'
+						}
+					},
+					{
+						url: 'shop.html',
+						id: 'shop.html',
+						styles: {
+							top: '0',
+							bottom: '50px'
+						}
+					}
+				]
+			});
+			function plusReady() {
+				plus.navigator.setStatusBarBackground('#F55353');
+				window.addEventListener('homeReady', function() {
+					var view = plus.webview.getWebviewById('index.html');
+					view.show();
+				});
+				plus.runtime.getProperty(plus.runtime.appid, function(inf) {
+					$.ajax({
+						type: "post",
+						url: url_url + "/user/selectSmVersionUpgrade",
+						dataType: 'json',
+						data:{
+							num:2
+						},
+						success: function(res) {
+							if(res.data.smVuVersion != inf.version) {
+								//								版本更新
+								plus.nativeUI.toast("正在为您更新资源~");
+								plus.downloader.createDownload(url_url + res.data.smVuUrl, {
+									filename: "_doc/update/"
+								}, function(d, status) {
+									if(status == 200) {
+										plus.runtime.install(d.filename, {}, function() {
+											plus.nativeUI.alert("应用资源更新完成！点击重启！", function() {
+												plus.runtime.restart();
+											});
+										}, function(e) {
+											alert("安装更新包失败[" + e.code + "]：" + e.message);
+										});
+									} else {
+										plus.nativeUI.closeWaiting();
+										alert("下载更新包失败！");
+									}
+								}).start();
+							}
+						},
+						error: function(err) {
+							alert(JSON.stringify(err))
+						}
+					});
+				});
+			}
+			if(window.plus) {
+				plusReady();
+			} else {
+				document.addEventListener("plusready", plusReady, false);
+			}
+
+			mui("#tabBar").on('tap', 'a', function(e) {
+				var id = this.getAttribute('id');
+				var view = plus.webview.getWebviewById(id);
+				view.show();
+			});
+		</script>
+	</body>
+
+</html>

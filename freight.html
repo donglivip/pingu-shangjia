@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="css/mui.css" />
+		<link rel="stylesheet" type="text/css" href="css/freight.css" />
+		<link rel="stylesheet" href="css/iconfont.css" />
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="heade-aside" onclick="opennew('shop')">
+					返回
+				</div>
+				<div class="hedaer-center">
+					运费模板
+				</div>
+				<div class="heade-aside" onclick="opennew('newrule')">
+					新建模板
+				</div>
+			</div>
+			<div class="main">
+
+			</div>
+		</div>
+	</body>
+	<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/url.js"></script>
+	<script type="text/javascript">
+		function opennew(target) {
+			mui.openWindow({
+				url: target + '.html',
+				id: target
+			})
+		};
+		window.addEventListener('refresh', function(e) { //执行刷新
+			location.reload();
+		});
+		let smMerchantId = localStorage.getItem('smMerchantId');
+
+		$.ajax({
+			type: "post",
+			url: url_url + "/merchant/querySmExpressTemplateLists",
+			async: true,
+			data: {
+				smMerchantId: smMerchantId
+			},
+			success: function(res) {
+				console.log(JSON.stringify(res));
+				let ruleboxHtml = '';
+				if(res.status == 200) {
+					for(var i = 0; i < res.data.length; i++) {
+						if(res.data[i].smEtIsDefault == 1) {
+							ruleboxHtml += `
+						  <div class="rule-box" data-id=${res.data[i].smExpressTemplateId} data-tid=${res.data[i].smExpressFeeId}>
+							   <div class="rule-top">
+								   <span class="rule-name">
+								   <span class="defaultRule">默认</span>
+									   ${res.data[i].smEtName}
+								   </span>
+							   </div>
+							   <div class="rule-main">
+								提示：除指定地区外，其余地区的运费采用“默认运费”
+							   </div>
+							   <i class="iconfont icon-shanchu remove"></i>
+				          </div>
+						`;
+						} else {
+							ruleboxHtml += `
+						  <div class="rule-box" data-id=${res.data[i].smExpressTemplateId} data-tid=${res.data[i].smExpressFeeId}>
+							   <div class="rule-top">
+								   <span class="rule-name">
+									   ${res.data[i].smEtName}
+								   </span>
+							   </div>
+							   <div class="rule-main">
+								提示：除指定地区外，其余地区的运费采用“默认运费”
+							   </div>
+							   <i class="iconfont icon-shanchu remove"></i>
+				          </div>
+						`;
+						}
+
+					}
+
+					$('.main').append(ruleboxHtml)
+				}
+
+			},
+			error: function(err) {
+
+			}
+		});
+
+		$(function() {
+			//跳转到 新增 运费模版页面 进行修改设置
+			$('body').on('click', '.rule-box', function() {
+				let mainId = $(this).data('id');
+
+				console.log(mainId);
+				mui.openWindow({
+					url: 'newrule.html',
+					id: 'newrule',
+					extras: {
+						TemplateId: mainId
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			})
+
+			//删除 父模版
+			$('body').on('click', '.remove', function(e) {
+				e.stopPropagation()
+				console.log(smMerchantId);
+				var mainId = $(this).parent().data('id');
+
+				var btnArray = ['是', '否'];
+				mui.confirm('确定删除此模版？', '提示', btnArray, function(e) {
+					if(e.index == 0) {
+						$.ajax({
+							type: "post",
+							url: url_url + "/merchant/deleteExpressTemplate",
+							async: true,
+							data: {
+								smExpressTemplateId: mainId,
+								smMerchantId: smMerchantId
+							},
+							success: function(res) {
+								location.reload();
+							},
+							error: function(err) {
+
+							}
+						});
+					} else {
+
+					}
+				})
+			})
+		})
+	</script>
+
+</html>

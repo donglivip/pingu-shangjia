@@ -1,0 +1,22 @@
+.home{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: .96rem;
+	background: linear-gradient(90deg,#FF7552,#FC4149);
+	box-shadow: none;
+}
+/*登录*/
+.Login_span{text-align: center;margin-top:200px;}
+
+/*订单*/
+.ell{border-bottom:3px solid #007aff};
+
+.mui-bar-nav{
+	top: 0;
+   	-webkit-box-shadow: 0 0px 6px #FC4149;
+   	box-shadow: 0 0px 0px #ccc;
+}
+
+  
+   	

@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/dui.js"></script>
+		<script type="text/javascript" src="js/rem.js"></script>
+		<link rel="stylesheet" href="css/vip.css" />
+	</head>
+
+	<body>
+		<div class="header">
+			<div class="header-top">
+				<div class="header-aside mui-action-back" >
+					<img src="img/block-left.png" />
+				</div>
+				<div id="main">
+					<div class="header-content">会员管理</div>
+					<div style="margin-right: 0.2rem; font-size: 0.28rem; color: white;" onclick="mui.openWindow('MemberDiscount.html')">编辑会员规则</div>
+				</div>
+			</div>
+		</div>
+		<div class="main-ind">
+			<span>会员享受优惠价格<span id="discount"></span> %</span>
+		</div>
+		<section class="memWrap">
+
+		</section>
+
+		<script src="js/url.js"></script>
+		<script src="js/jquery-2.1.0.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				let smMerchantId = localStorage.getItem('smMerchantId');
+				let memberList = '';
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/queryMyMember",
+					async: true,
+					data: {
+						'smMerchantId': smMerchantId
+					},
+					success: function(res) {
+						//						首次打开插入规则
+						if(res.data == null) {
+							$.ajax({
+								type: "post",
+								url: url_url + "/merchant/insertMember",
+								async: true,
+								data: {
+									smMerchantId: smMerchantId,
+									smMmName: '普通会员',
+									smMmDiscount: 0,
+									smMmCreateName: localStorage.getItem('smMeLegalPerson')
+								},
+								success: function(res) {
+									$.ajax({
+										type: "post",
+										url: url_url + "/merchant/queryMyMember",
+										async: true,
+										data: {
+											'smMerchantId': smMerchantId
+										},
+										success: function(res) {
+											location.reload()
+										},
+										error: function(err) {
+											console.log(err);
+										}
+									});
+								},
+								error: function(err) {
+									console.log(err);
+								}
+							});
+						} else {
+							$('#discount').text(res.data.smMmDiscount);
+							localStorage.setItem('smMerchantMemberId', res.data.smMerchantMemberId);
+						}
+					},
+					error: function(err) {
+						console.log(err);
+					}
+				});
+
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/queryMyVip",
+					async: true,
+					data: {
+						'smMerchantId': smMerchantId,
+						'type': 1
+					},
+					success: function(res) {
+						let data = res.data;
+						for(var i = 0; i < data.length; i++) {
+							let creatDate = data[i].smAmCreateTime.substring(0, 10) + ' ' + data[i].smAmCreateTime.substring(11, 19);
+							memberList += `
+				 			     <div class="main-tab" data-id=${data[i].smApplyMemberId}>
+									<div class="main-left">
+										<img src="${url_url + data[i].smAmShopLogo}" />
+									</div>
+						
+									<div class="main-right">
+										<div class="main-upper">
+											<div class="main-characters">${data[i].smMerchantName}</div>
+										</div>
+						
+										<div class="main-lower">
+											<div class="main-number">加入时间：${creatDate}</div>
+										</div>
+									</div>
+								</div>
+				 			`;
+						}
+						$('.memWrap').append(memberList);
+					},
+					error: function(err) {
+
+					}
+				});
+
+				mui('body').on('tap', '.main-tab', function() {
+					let MemberId = $(this).data('id');
+					console.log(MemberId);
+
+					mui.openWindow({
+						url: 'MemerDetail.html',
+						id: 'MemerDetail',
+						extras: {
+							'MemberId': MemberId
+						},
+						waiting: {
+							autoShow: false
+						}
+					});
+
+				});
+
+			})
+		</script>
+	</body>
+
+</html>

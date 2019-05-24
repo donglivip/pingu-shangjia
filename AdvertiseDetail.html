@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/Launch.css" />
+		<script type="text/javascript" src="js/dui.js"></script>
+		<script type="text/javascript" src="js/mui.js"></script>
+		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-aside mui-action-back">
+					<img src="img/block-left.png" />
+				</div>
+				<div class="header-content">查询商户广告</div>
+				<div class="header-text"></div>
+			</div>
+
+			<div class="main">
+				<!--<div class="main-text shopType" style="border-bottom: 1px solid #F3F3F3;"></div>-->
+				<div class="main-box">
+					<div class="main-text">经营类型</div>
+					<div class="main-news mallName"></div>
+				</div>
+				<div class="main-box">
+					<div class="main-text">广告位</div>
+					<div class="main-news advArea"></div>
+				</div>
+				<div class="main-box">
+					<div class="main-text">价格</div>
+					<div class="main-news advPrice"></div>
+				</div>
+				<div class="main-box">
+					<div class="main-text">投放地址</div>
+					<div class="main-news advAddress">请选择</div>
+				</div>
+				<div class="main-box">
+					<div class="main-text">投放开始时间</div>
+					<div class="main-news Stime">请选择</div>
+				</div>
+				<div class="main-box">
+					<div class="main-text">投放结束时间</div>
+					<div class="main-news Etime"></div>
+				</div>
+				<div class="main-Photo">
+					<div class="main-text">店铺图片</div>
+					<img id="adShopImg"  />
+				</div>
+
+			</div>
+
+		</div>
+
+		<script src="js/jquery-2.1.0.js"></script>
+		<script src="js/url.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function() {
+				var smAdvertisementMiddleId = plus.webview.currentWebview().MiddleId;
+				var type = plus.webview.currentWebview().type;
+				var smMerchantId = localStorage.getItem('smMerchantId');
+				
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/queryMyAdvertisementInfo",
+					async: true,
+					data: {
+						'smMerchantId': smMerchantId,
+						'type': type,
+						'smAdvertisementMiddleId':smAdvertisementMiddleId
+					},
+					success: function(res) {
+						console.log(JSON.stringify(res))
+						let myAdver = res.data[0];
+						$('.Stime').text(myAdver.smAmCreateTime);
+						$('.Etime').text(myAdver.smAmTime);
+						$('.advAddress').text(myAdver.smAddress);
+						$('.shopType').text(myAdver.smStName);
+						$('.mallName').text(myAdver.smAmName);
+						$('.advPrice').text(myAdver.smAmPrice);
+						$('#adShopImg').attr('src',myAdver.smMeShopImg);
+                        if(myAdver.smAmType == 1){
+                        	$('.advArea').text('首页广告');
+                        }else{
+                        	$('.advArea').text('分类广告');
+                        }
+					},
+					error: function(err) {
+						console.log(JSON.stringify(err));
+					}
+				});
+		})
+		</script>
+	</body>
+
+</html>

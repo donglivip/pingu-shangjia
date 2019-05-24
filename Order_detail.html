@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript" src="js/mui.js"></script>
+		<link rel="stylesheet" href="css/mui.css" />
+		<link rel="stylesheet" type="text/css" href="css/como.css" />
+		<link rel="stylesheet" type="text/css" href="css/Order-receipt.css" />
+		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+		<style>
+			.main-payment {
+				/* height: 1.48rem; */
+				background: #FFFFFF;
+				border-bottom: 1px solid #F5F5F5;
+				padding:.24rem;
+			}
+			
+			p {
+				font-size: .28rem;
+				margin: 0;
+				color: #333333;
+			}
+			
+			.main-bottom2 {
+				height: 1.4rem;
+				line-height: 0.54rem;
+				background: #FFFFFF;
+				border-bottom: 1px solid #F5F5F5;
+				margin-bottom: .16rem;
+				padding: 0.2rem 0.24rem;
+			}
+			
+			.main-bottom2 div {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+			
+			.totalPrice {
+				color: #D61A0A !important;
+			}
+			
+			.main-footer {
+				background: #FFFFFF;
+				padding: 0.24rem 0.24rem;
+				line-height: 0.6rem;
+			}
+			
+			.main-footer div {
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+			
+			.main-footer p {
+				color: #9c9c9c;
+				font-size: 0.32rem;
+			}
+			
+			.footer-title {
+				margin-bottom: 0.2rem;
+				color: #333333 !important;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<header class="mui-bar mui-bar-nav home" style="top: 0px;">
+				<a class="mui-action-back  mui-pull-left"><img src="img/block-left.png" style="width: 25;height: 25px;margin-top:8px;" /></a>
+				<h1 class="mui-title" style="color: #FFFFFF;">订单详情</h1>
+			</header>
+        <section class="main">
+        </section>
+		</div>
+		<script src="js/mui.js"></script>
+		<script src="js/url.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function() {
+				var value = plus.webview.currentWebview().Order_Id;
+				$.ajax({
+					type: "POST",
+					url: url_url + "/merchant/queryDetailOrder",
+					dataType: 'json',
+					async: true,
+					data: {
+						'smOrderId': value
+					},
+					success: function(res) {
+						var order = res.data[0];
+						var _detailMain = '';
+						var _detailHeader = `<div class="main-tab">
+									<div class="main-text">订单号：${order.smOrderId}</div>
+									<div class="main-time">${order.smOdCreateTimeString}</div>
+								</div>`
+								
+							for(var i =0;i<res.data.length;i++){
+							    _detailMain += `<div class="main-Photo">
+									<div class="main-left">
+										<img src="${res.data[i].smMeShopImg}" />
+										</div>
+										<div class="main-right">
+											<div class="main-upper">
+												<div class="main-characters">${res.data[i].smCoName}</div>
+											</div>
+											<div class="main-lower">
+												<div class="main-number">￥${res.data[i].smOdPrice}</div>
+												<div class="main-ride">x${res.data[i].smOdNum}</div>
+											</div>
+										</div>
+									</div>
+									<div class="main-payment">
+										<span class="main-Title">${res.data[i].smOdSpec}</span>
+									</div>
+								`;
+							}
+								
+							var _detailFoot = `	<div class="main-bottom2">
+									<div>
+										<p>运费</p>
+										<p>￥${order.smOrFreight}</p>
+									</div>
+									<div>
+										<p>总价格</p>
+										<p class="totalPrice">￥${order.smOrPrice}</p>
+									</div>
+								</div>
+						    </div>
+							<section class="main-footer">
+								<p class="footer-title">订单信息</p>
+								<div>
+									<p>下单时间:</p>
+									<p>${order.smOdCreateTimeString}</p>
+								</div>
+								<div>
+									<p>发货时间:</p>
+									<p>${order.smOrExpressTimeString}</p>
+								</div>
+								<div>
+									<p>快递编号:</p>
+									<p>${order.smOrExpress}</p>
+								</div>
+								<div>
+									<p>评价星级:</p>
+									<p>${order.smCoEvaluateGrade}</p>
+								</div>
+					        </section>
+						`;
+						$('.main').append(_detailHeader+_detailMain+_detailFoot);
+					},
+					error: function(err) {
+						mui.toast('请求失败');
+					}
+				})
+			})
+		</script>
+	</body>
+
+</html>

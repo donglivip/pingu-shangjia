@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/Adding-bank.css" />
+		<script type="text/javascript" src="js/dui.js"></script>
+		<link rel="stylesheet" href="css/mui.picker.css" />
+		<link rel="stylesheet" href="css/mui.poppicker.css" />
+		<script type="text/javascript" src="js/mui.js"></script>
+		<script type="text/javascript" src="js/mui.picker.js"></script>
+		<script type="text/javascript" src="js/mui.poppicker.js"></script>
+		<script type="text/javascript" src="js/jquery-2.1.0.js" ></script>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-aside mui-action-back">
+					<img src="img/block-left.png" />
+				</div>
+				<div class="header-content" style="color: #FFFFFF;">添加银行卡</div>
+				<div class="header-aside"></div>
+			</div>
+			<div class="main">
+				<div class="main-box">
+					<div class="main-news">持卡人</div>
+					<input class="main-word" type="text" placeholder="持卡人真实姓名" />
+				</div>
+				<div class="main-box">
+					<div class="main-news">卡号</div>
+					<input class="main-word" type="text" placeholder="请输入银行卡号" />
+				</div>
+				<div class="main-box">
+					<div class="main-news">银行</div>
+					<input class="main-word" type="button" value="请选择所属银行" onclick="mui.openWindow('Bank.html')" style="background-color: white;display: flex;" />
+				</div>
+				<div class="main-box">
+					<div class="main-news">卡类型</div>
+					<input class="main-word" id="types"  type="button" value="请选择类型" style="background-color: white;display: flex;" />
+				</div>
+				<div class="main-box">
+					<div class="main-news">手机号</div>
+					<input class="main-word" type="text" placeholder="请输入银行卡预留手机号" />
+				</div>
+				<div class="main-bottom">同意协议并绑卡</div>
+			</div>
+		</div>
+	</body>
+	<!--<script src="js/mui.js"></script>-->
+	<script type="text/javascript">
+//		$(function(){
+//			
+//			mui.openWindow({
+//				url:'index.html',
+//				id:'index'
+//			})
+//			
+//			mui.back()
+//		})
+	</script>
+</html>

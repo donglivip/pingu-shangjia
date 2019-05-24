@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/chongzhi.css" />
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-aside mui-action-back">
+					<img src="img/youjian.png" />
+				</div>
+				<div class="header-text">充值</div>
+				<div class="header-aside"></div>
+			</div>
+			<div class="main">
+				<div class="main-one">
+					<div class="one-top">充值金额</div>
+					<div class="one-bottom">
+						<div class="one-text">￥</div>
+						<input type="number" placeholder="0.00" v-model="smUrPrice" />
+						<img src="img/Group 27.png" @click="clear" />
+					</div>
+				</div>
+				<div class="main-two">充值方式</div>
+				<div class="main-three">
+					<div class="three-box" @click="change(1)">
+						<div class="three-text">支付宝</div>
+						<img src="img/xuanzhong (1).png" v-if="status==2" />
+						<img src="img/tuandui (2).png" v-if="status==1" />
+					</div>
+					<div class="three-box" @click="change(2)">
+						<div class="three-text">微信</div>
+						<img src="img/xuanzhong (1).png" v-if="status==1" />
+						<img src="img/tuandui (2).png" v-if="status==2" />
+					</div>
+				</div>
+			</div>
+			<div class="bottom" @click="myajax">
+				<div class="bottom-text">确认充值</div>
+			</div>
+		</div>
+	</body>
+	<script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var myvue = new Vue({
+			el: '.wrapper',
+			data: {
+				smUrPrice: '',
+				status: 1,
+				channel: []
+			},
+			mounted: function() {
+				var that = this
+				// 1. 获取支付通道
+				function plusReady() {
+					// 获取支付通道
+					plus.payment.getChannels(function(channels) {
+						that.channel = channels;
+					}, function(e) {
+						alert("获取支付通道失败：" + e.message);
+					});
+				}
+				if(window.plus) {
+					plusReady();
+				} else {
+					document.addEventListener('plusready', plusReady, false);
+				}
+			},
+			methods: {
+				change: function(index) {
+					this.status = index
+				},
+				clear: function() {
+					this.smUrPrice = ''
+				},
+				myajax: function() {
+//					plus.nativeUI.showWaiting()
+					var that = this
+					if(that.smUrPrice == '') {
+						alert('请输入金额')
+						return false;
+					}
+					$.ajax({
+						type: "post",
+						url: url_url + "/user/merchantRecharge",
+						async: true,
+						dataType: 'json',
+						data: {
+							smMerchantId: localStorage.getItem('smMerchantId'),
+							price: that.smUrPrice,
+							state: that.status
+						},
+						success: function(res) {
+//							plus.nativeUI.closeWaiting()
+							if(that.status == 1) {
+								plus.payment.request(that.channel[0], res.data[0], function(result) {
+									plus.nativeUI.toast('充值成功')
+								}, function(error) {
+									plus.nativeUI.alert("支付失败：" + error.code);
+								});
+							} else {
+								plus.payment.request(that.channel[1], res, function(result) {
+									plus.nativeUI.toast('充值成功')
+								}, function(error) {
+									plus.nativeUI.alert("支付失败：" + error.code);
+								});
+							}
+						},
+						error: function(err) {
+							plus.nativeUI.closeWaiting()
+							alert("网络连接失败，请稍后重试")
+						}
+					});
+				}
+			}
+		})
+	</script>
+
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/denglu.css" />
+		<script type="text/javascript" src="js/mui.js"></script>
+		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-content">登录</div>
+			</div>
+			<div class="main">
+				<div class="main-text">手机快捷登录 </div>
+				<div class="main-box">
+					<input class="main-news" type="text" name="" id="phone" placeholder="请输入手机号" />
+					<div class="addcode">获取验证码</div>
+				</div>
+				<div class="main-Password">
+					<input type="text" name="" id="yans" class="main-word" placeholder="请输入验证码" />
+				</div>
+				<div class="main-signin">登录</div>
+				<div class="main-bottom">
+					<div class="main-phone">账号密码登录 </div>
+					<div class="main-phone">新商家注册 </div>
+				</div>
+			</div>
+			<script type="text/javascript" src="js/dui.js"></script>
+			<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+			<script type="text/javascript" src="js/mui.min.js"></script>
+			<script src="js/mui.picker.js"></script>
+			<script src="js/mui.poppicker.js"></script>
+			<script src="js/ajaxTools.js"></script>
+				
+			<script>
+				var mainphone = document.getElementsByClassName("main-phone");
+
+				var url_url = localStorage.getItem("http_url");
+				//验证码
+				var url_ur = localStorage.getItem("http_ur");
+
+				var yans = document.getElementById("yans");
+
+				var phone = $("#phone").val();
+
+				mainphone[0].addEventListener("tap", function() {
+					mui.back();
+				})
+
+				mainphone[1].addEventListener("tap", function() {
+					dui.jump("business.html", "business")
+				})
+
+				//获取验证码
+				$(".addcode").click(function() {
+
+					var phone = $("#phone").val();
+					if(phone == "") {
+						alert("手机号码不能为空！");
+					} else if(!(/^1[3|4|5|7|8|9][0-9]\d{4,8}$/.test(phone))) {
+						//判断手机号是否合法
+						alert("不是完整的11位手机号或者正确的手机号前七位");
+						return false;
+					}
+					var i = 60;
+					setInterval(function() {
+						if(i == 0) {
+							$('.addcode').html('获取验证码');
+						} else {
+							i = i - 1;
+							$('.addcode').html(i + '秒');
+						}
+					}, 1000);
+					//发送验证码
+					//						$.ajax({
+					//							type: "get",
+					//							url: url_ur + "/message/SendSms",
+					//							async: true,
+					//							dataType: "JSON",
+					//							data: {
+					//								phone:phone
+					//							},
+					//							success: function(res) {
+					//								code = res
+					//								alert('短信已发送');
+					//							},
+					//							error: function(err) {
+					//								alert('发送验证码失败！')
+					//							}
+					//						});		
+					var sendData = {'phone':phone};
+					Ajax('get', '/merchant/queryPhoneLogin', sendData, function(data) {
+						console.log(data);
+					}, function(error) {
+						console.log(error);
+					});
+				})
+				//登录注册
+				$(".main-signin").click(function() {
+
+					console.log(phone)
+					console.log(code)
+
+					$.ajax({
+						type: "get",
+						url: url_url + "/businessside/?service=Users.landSms",
+						async: true,
+						dataType: "JSON",
+						data: {
+							'loginname': phone,
+							'number': code
+						},
+						success: function(data) {
+							console.log(JSON.stringify(data));
+						},
+						error: function(data) {
+							console.log(JSON.stringify(data));
+						}
+					});
+				})
+			</script>
+	</body>
+
+</html>

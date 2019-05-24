@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="css/mui.min.css" />
+		<link rel="stylesheet" type="text/css" href="css/Alipay.css" />
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css"/>
+		<script type="text/javascript" src="js/dui.js"></script>
+		<script type="text/javascript" src="js/mui.js"></script>
+		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-aside">
+					<img src="img/block-left.png" class="mui-action-back" />
+				</div>
+				<div class="header-content">绑定支付宝</div>
+				<div class="header-aside"></div>
+			</div>
+			<div class="main">
+				<div class="main-box">
+					<div class="main-text">支付宝账号</div>
+					<input class="main-news" id="main1" type="text" placeholder="请输入支付宝账号" value="" style="border: 0px;" />
+				</div>
+				<div class="main-box">
+					<div class="main-text">支付宝姓名</div>
+					<input class="main-news" id="main-pass" type="text" placeholder="请输入支付宝姓名" value="" style="border: 0px;" />
+				</div>
+				<!--<div class="allow-down">
+					<span>绑定微信</span>
+					<i class="iconfont icon-xiangxiajiantou"></i>
+				</div>
+				<section class="wechatWrap" style="margin-top: 0.2rem;display: none;">
+				<div class="main-box" >
+					<div class="main-text">微信账户</div>
+					<input class="main-news" id="main2" type="text" placeholder="请输入微信账户" value="" style="border: 0px;" />
+				</div>
+				<div class="main-box">
+					<div class="main-text">微信姓名</div>
+					<input class="main-news" id="wechat" type="text" placeholder="请输入微信姓名" value="" style="border: 0px;" />
+				</div>-->
+				</section>
+				<div class="main-confirm">确认绑定</div>
+			</div>
+			
+			<script src="js/url.js"></script>
+			<script src="js/jquery-2.1.0.js"></script>
+			<script type="text/javascript">
+				$(function() {
+                    $('.allow-down').click(function(){
+                    	$('.wechatWrap').toggle();
+                    	$(this).hide();
+                    });
+					$('.main-confirm').click(function() {
+						let Aliaccount = $('#main1').val();
+						let Aliname = $('#main-pass').val();
+						let WeCaccount = $('#main2').val();
+						let WeCname = $('#wechat').val();
+						let WalletId = localStorage.getItem('WalletId');
+						let smMwCreateName = localStorage.getItem('smMeCreateName');
+						let smMwIsAlipay = localStorage.getItem('smMwIsAlipay');
+						let smMwIsWechat = localStorage.getItem('smMwIsWechat');
+                        var isShow = $('.wechatWrap').css('display')
+                        if(isShow == 'none'){
+                        	if(Aliaccount == '' || Aliname == ''){
+                        		alert('输入支付宝账号和名称')
+                        		return false
+                        	}
+                        }else{
+                        	if(Aliaccount == '' || Aliname == '' || WeCaccount == '' || WeCname == ''){
+                        		alert('请输入账号和名称')
+                        		return false
+                        	}
+                        }
+						let  data = {
+							    'smMerchantWalletId': WalletId,
+								'smMwIsAlipay':smMwIsAlipay,
+								'smMwIsWechat':smMwIsWechat,
+								'smMwCreateName':smMwCreateName,
+								'smMwAlipayCode': Aliaccount,
+								'smMwAlipayName': Aliname
+						};
+						$.ajax({
+							type: "post",
+							url: url_url + "/merchant/updateAPIWX",
+							async: true,
+							data: data,
+							success: function(res) {
+								mui.toast('绑定成功')
+								mui.back()
+							},
+							error: function(err) {
+                                console.log(err);
+							}
+						});
+					});
+
+				});
+			</script>
+
+	</body>
+
+</html>

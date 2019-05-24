@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/My-wallet.css" />
+		<link rel="stylesheet" type="text/css" href="css/mui.min.css" />
+		<script type="text/javascript" src="js/dui.js"></script>
+		<script type="text/javascript" src="js/mui.js"></script>
+		<script type="text/javascript" src="js/rem.js"></script>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-aside">
+					<img class="mui-action-back" src="img/block-left.png" />
+				</div>
+				<div class="header-content">我的钱包</div>
+				<div class="header-text" id="mingxi">明细</div>
+			</div>
+			<div class="main">
+				<div class="main-content">
+					<div class="main-top">
+						<div class="main-text">账户余额</div>
+						<div class="main-news">
+							￥<span id="yajin_money"></span>
+							<span class="main-pay" id="Pay">充值</span>
+						</div>
+					</div>
+					<div class="main-bottom">
+						<div class="main-left">
+							<div class="main-bond">店铺保证金</div>
+							<div class="main-number">￥<span class="shou" id="bzmoney">300</span></div>
+							<div class="left-bottom">
+								<a class="main-Relieve main-Relieve01" href="#typeLayer">缴纳保证金</a>
+								<div class="main-Relieve main-Relieve01" id="jiechu">解除保证金</div>
+							</div>
+						</div>
+						<div class="main-left">
+							<div class="main-bond">租金</div>
+							<div class="main-number">￥<span class="shou" id="zumoney">200</span></div>
+							<div class="left-bottom">
+								<a class="main-Relieve main-Relieve02" style="display: none;" href="#zprice">缴纳租金</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="main-box Alipay">
+					<div class="main-word" id="alipay">绑定支付宝</div>
+				</div>
+				<!--<div class="main-box">
+					<div class="main-word" id="Adding">绑定银行卡</div>
+				</div>-->
+				<div class="main-box forward">
+					<div class="main-word">余额提现</div>
+				</div>
+				<div class="main-box shangxian">
+					<div class="main-word" id="alipay">购买商品上限</div>
+				</div>
+			</div>
+			<div id="zprice" class="mui-popover mui-popover-action">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell myindex">
+						<a href="#" data-id='0'>余额支付</a>
+					</li>
+					<li class="mui-table-view-cell myindex">
+						<a href="#" data-id='1'>支付宝</a>
+					</li>
+					<li class="mui-table-view-cell myindex">
+						<a href="#" data-id='2'>微信</a>
+					</li>
+				</ul>
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						<a href="#zprice" data-id='-1'><b>取消</b></a>
+					</li>
+				</ul>
+			</div>
+			<div id="typeLayer" class="mui-popover mui-popover-action">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell myindex">
+						<a href="#" data-id='0'>余额支付</a>
+					</li>
+					<li class="mui-table-view-cell myindex">
+						<a href="#" data-id='1'>支付宝</a>
+					</li>
+					<li class="mui-table-view-cell myindex">
+						<a href="#" data-id='2'>微信</a>
+					</li>
+				</ul>
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						<a href="#typeLayer" data-id='-1'><b>取消</b></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<script src="js/url.js"></script>
+		<script src="js/jquery-2.1.0.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				var channel
+				// 1. 获取支付通道
+				function plusReady() {
+					// 获取支付通道
+					plus.payment.getChannels(function(channels) {
+						channel = channels;
+					}, function(e) {
+						alert("获取支付通道失败：" + e.message);
+					});
+				}
+				if(window.plus) {
+					plusReady();
+				} else {
+					document.addEventListener('plusready', plusReady, false);
+				}
+				// 缴纳保证金
+				$('#zprice .myindex').click(function() {
+					var index = $(this).index()
+					if(index == 0) {
+						$.ajax({
+							type: "post",
+							url: url_url + "/user/merchantMortgagePriceWall",
+							dataType: 'json',
+							async: true,
+							data: {
+								smMerchantId: localStorage.getItem('smMerchantId'),
+								smDrMortgagePrice: $('#zumoney').html()
+							},
+							success: function(res) {
+								if(res.status == 200) {
+									mui.toast('缴纳成功')
+									localStorage.setItem('smMeMortgagePrice',$('#zumoney').html())
+									location.reload()
+								}else{
+									mui.toast(res.msg)
+								}
+							},
+							error: function(err) {
+								console.log(err)
+							}
+						})
+					} else {
+						$.ajax({
+							type: "post",
+							url: url_url + "/user/merchantMortgagePriceAliWx",
+							dataType: 'json',
+							async: true,
+							data: {
+								smMerchantId: localStorage.getItem('smMerchantId'),
+								smDrMortgagePrice: $('#zumoney').html(),
+								state: index
+							},
+							success: function(res) {
+									if(index == 1) {
+										//									支付宝支付
+										plus.payment.request(channel[0], res.data[0], function(result) {
+											mui.toast('投放成功')
+										}, function(error) {
+											alert('支付失败')
+										});
+									} else {
+										//									微信支付
+										plus.payment.request(channel[1], res, function(result) {
+											mui.toast('投放成功')
+										}, function(error) {
+											alert('支付失败')
+										});
+									}
+							},
+							error: function(err) {
+								console.log(err)
+							}
+						})
+					}
+				})
+				// 缴纳保障金
+				$('#typeLayer .myindex').click(function() {
+					var index = $(this).index()
+					if(index == 0) {
+						$.ajax({
+							type: "post",
+							url: url_url + "/user/merchantEnsurePriceWall",
+							dataType: 'json',
+							async: true,
+							data: {
+								smMerchantId: localStorage.getItem('smMerchantId'),
+								smDrEnsurePrice: $('#bzmoney').html()
+							},
+							success: function(res) {
+								if(res.status == 200) {
+									mui.toast('缴纳成功')
+									localStorage.setItem('smMeEnsurePrice',$('#bzmoney').html())
+									location.reload()
+								}else{
+									mui.toast(res.msg)
+								}
+							},
+							error: function(err) {
+								console.log(err)
+							}
+						})
+					} else {
+						$.ajax({
+							type: "post",
+							url: url_url + "/user/merchantEnsurePriceAliWx",
+							dataType: 'json',
+							async: true,
+							data: {
+								smMerchantId: localStorage.getItem('smMerchantId'),
+								smDrEnsurePrice: $('#bzmoney').html(),
+								state: index
+							},
+							success: function(res) {
+									if(index == 1) {
+										//									支付宝支付
+										plus.payment.request(channel[0], res.data[0], function(result) {
+											mui.toast('投放成功')
+										}, function(error) {
+											alert('支付失败')
+										});
+									} else if(index == 2) {
+										//									微信支付
+										plus.payment.request(channel[1], res, function(result) {
+											mui.toast('投放成功')
+										}, function(error) {
+											alert('支付失败')
+										});
+									}
+							},
+							error: function(err) {
+								console.log(err)
+							}
+						})
+					}
+				})
+				$('.shangxian').click(function(){
+					mui.openWindow({
+						url:'shangpinshangxian.html'
+					})
+				})
+				$('#jiechu').click(function() {
+					//					解除保证金
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/merchantRefundMargin",
+						dataType: 'json',
+						async: true,
+						data: {
+							smMerchantId: localStorage.getItem('smMerchantId')
+						},
+						success: function(res) {
+							localStorage.setItem('smMeEnsurePrice',-1)
+							location.reload()
+						},
+						error: function(err) {
+							console.log(err)
+						}
+					});
+				})
+				let smMerchantId = localStorage.getItem('smMerchantId');
+				//				保证金
+				if(localStorage.getItem('smMeEnsurePrice') == -1 || localStorage.getItem('smMeEnsurePrice') == '-1') {
+					//					查询保证金规则
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/selectSmDepositRuleMerchantId",
+						dataType: 'json',
+						async: true,
+						data: {
+							smShopTypeId: localStorage.getItem('smShopTypeId')
+						},
+						success: function(res) {
+							$('#bzmoney').html(res.data.smDrEnsurePrice)
+							$('.main-Relieve01').eq(0).show()
+							$('.main-Relieve01').eq(1).hide()
+						},
+						error: function(err) {
+							console.log(err)
+						}
+					});
+				} else {
+					$('#bzmoney').html(localStorage.getItem('smMeEnsurePrice'))
+					$('.main-Relieve01').eq(1).show()
+					$('.main-Relieve01').eq(0).hide()
+				}
+				//				租金
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/selectSmDepositRuleMerchantId",
+					dataType: 'json',
+					async: true,
+					data: {
+						smShopTypeId: localStorage.getItem('smShopTypeId')
+					},
+					success: function(res) {
+						$('#zumoney').html(res.data.smDrMortgagePrice)
+						$('.main-Relieve02').html('缴纳租金')
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+				if(localStorage.getItem('smMeMortgagePrice') == -1 || localStorage.getItem('smMeMortgagePrice') == '-1') {
+					$('.main-Relieve02').show()
+				}
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/queryMerchantWallet",
+					dataType: 'json',
+					async: true,
+					data: {
+						smMerchantId: smMerchantId,
+					},
+					success: function(res) {
+						var wallet = res.data;
+						localStorage.setItem('WalletId', wallet.smMerchantWalletId);
+						localStorage.setItem('smMwIsAlipay', wallet.smMwIsAlipay);
+						localStorage.setItem('smMwIsWechat', wallet.smMwIsWechat);
+						$('#yajin_money').text(wallet.smMwPrice);
+						if(wallet.smMwIsAlipay == 1) {
+							$('#alipay').text('已绑定支付宝(' + wallet.smMwAlipayCode + ')')
+						}
+					},
+					error: function(err) {
+						console.log(err);
+					}
+				});
+			});
+			//明细
+			$("#mingxi").click(function() {
+				dui.jump("wallet.html", "wallet");
+			})
+			//充值
+			$("#Pay").click(function() {
+				dui.jump("Pay.html", "Pay");
+			})
+			$("#bank").click(function() {
+				dui.jump("Pay.html", "Pay");
+			})
+			//绑定支付
+			$(".Alipay").click(function() {
+				dui.jump("Alipay.html", "Alipay");
+			})
+			//余额提现
+			$(".forward").click(function() {
+				dui.jump("Put-forward.html", "forward");
+			})
+		</script>
+	</body>
+</html>

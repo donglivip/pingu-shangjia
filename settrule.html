@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/freight.css" />
+		<link href="css/mui.picker.css" rel="stylesheet" />
+		<link href="css/mui.poppicker.css" rel="stylesheet" />
+		<script src="js/mui.js"></script>
+		<script src="js/mui.picker.js"></script>
+		<script src="js/mui.poppicker.js"></script>
+		<script>
+			(function($, doc) {
+				$.init();
+				$.ready(function() {
+					var cityPicker3 = new $.PopPicker({
+						layer: 1
+					});
+					cityPicker3.setData(cityData2);
+					var showCityPickerButton = doc.getElementById('address');
+					showCityPickerButton.addEventListener('tap', function(event) {
+						cityPicker3.show(function(items) {
+							doc.getElementById('addressNULL').value += ((items[0] || {}).text + ',');
+							var dVal = doc.getElementById('addressNULL').value;
+							var arr = dVal.split(',');
+							var newArr = uniq(arr);
+							// 输入框地址   输入时去重
+							function uniq(array) {
+								var temp = []; //一个新的临时数组
+								for(var i = 0; i < array.length; i++) {
+									if(temp.indexOf(array[i]) == -1) {
+										temp.push(array[i]);
+									}
+								}
+								return temp;
+							}
+
+							var province = '';
+							for(var i = 0; i < newArr.length - 1; i++) {
+								province += newArr[i] + ',';
+							}
+
+							doc.getElementById('address').innerHTML = province;
+
+						});
+					}, false);
+				});
+			})(mui, document);
+		</script>
+	</head>
+
+	<body>
+		<input type="hidden" id="addressNULL" />
+		<input type="hidden" id="addressResult" />
+		<div class="wrapper newrule">
+			<div class="header">
+				<div class="heade-aside">
+
+				</div>
+				<div class="hedaer-center">
+					运费模板设置
+				</div>
+				<div class="heade-aside saveRule">
+					保存
+				</div>
+			</div>
+			<div class="main">
+
+				<p type="text" id="address">选择地区</p>
+				<input type="text" id="firstNum" placeholder="x件" />
+				<input type="text" id="firstPri" placeholder="x元" />
+				<input type="text" id="addNum" placeholder="每增加x件" />
+				<input type="text" id="addPri" placeholder="增加x元" />
+			</div>
+		</div>
+	</body>
+
+	<script src="js/jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/city.data-2.js"></script>
+	<script src="js/url.js"></script>
+	<script type="text/javascript">
+		var abc = localStorage.getItem('existAdress');
+		mui.plusReady(function() {
+			$('.saveRule').click(function() {
+				var smMerchantId = localStorage.getItem('smMerchantId');
+				var smEtName = plus.webview.currentWebview().name;
+				var smEtAddress = plus.webview.currentWebview().city;
+				var smEtTime = plus.webview.currentWebview().time;
+				var smExpressTemplateId = plus.webview.currentWebview().tempId; //添加规则 运费id
+				var smExpressFeeId = plus.webview.currentWebview().feeId; //修改规则 运费id
+				var smEfAddressPrv = $('#address').text().substring(0, $('#address').text().length - 1);
+				var smEfDefaultNum = $('#firstNum').val();
+				var smEfDefaultPrice = $('#firstPri').val();
+				var smEfAddNum = $('#addNum').val();
+				var smEfAddPrice = $('#addPri').val();
+				//省份查重
+				var abc = localStorage.getItem('existAdress');
+				var isexist = abc.split(',') //缓存  省份
+				var newadd = smEfAddressPrv.split(',') //新增省份
+
+				var temp = []; //临时数组1 
+
+				var temparray = []; //临时数组2 
+
+				for(var i = 0; i < isexist.length; i++) {
+					temp[isexist[i]] = true; //巧妙地方：把数组B的值当成临时数组1的键并赋值为真 
+				};
+
+				for(var i = 0; i < newadd.length; i++) {
+					if(temp[newadd[i]]) {
+						temparray.push(newadd[i]); //巧妙地方：同时把数组A的值当成临时数组1的键并判断是否为真，如果不为真说明没重复，就合并到一个新数组里，这样就可以得到一个全新并无重复的数组 
+						alert(temparray.join(",") + ' 已经存在')
+						return false;
+					};
+				};
+
+				if(smEfAddressPrv == '' || smEfDefaultNum == '' || smEfDefaultPrice == '' || smEfAddNum == "" || smEfAddPrice == '') {
+					alert('内容填写不完整');
+					return false;
+				}
+
+				//判断 是修改或新增  或者添加
+				if(smExpressTemplateId) {
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/addExpressFee",
+						async: true,
+						data: {
+							smExpressTemplateId: smExpressTemplateId,
+							smEfCreateName: smMerchantId,
+							address: smEfAddressPrv,
+							smEfDefaultNum: smEfDefaultNum,
+							smEfDefaultPrice: smEfDefaultPrice,
+							smEfIsAppoint: 1,
+							smEfAddNum: smEfAddNum,
+							smEfAddPrice: smEfAddPrice
+						},
+						success: function(res) {
+							mui.back()
+						},
+						error: function(err) {
+
+						}
+					});
+				} else if(smExpressFeeId) {
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/updateExpressFee",
+						async: true,
+						data: {
+							smExpressFeeId: smExpressFeeId,
+							smEfUpdateName: smMerchantId,
+							address: smEfAddressPrv,
+							smEfDefaultNum: smEfDefaultNum,
+							smEfDefaultPrice: smEfDefaultPrice,
+							smEfAddNum: smEfAddNum,
+							smEfAddPrice: smEfAddPrice
+						},
+						success: function(res) {
+							mui.back();
+						},
+						error: function(err) {
+
+						}
+					});
+
+				} else {
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/insertExpress",
+						async: true,
+						data: {
+							smMerchantId: smMerchantId,
+							smEtName: smEtName,
+							smEtAddress: smEtAddress,
+							smEtTime: smEtTime,
+							smEtIsStyle: 1,
+							smEfIsAppoint: 1,
+							address: smEfAddressPrv,
+							smEfDefaultNum: smEfDefaultNum,
+							smEfDefaultPrice: smEfDefaultPrice,
+							smEfAddNum: smEfAddNum,
+							smEfAddPrice: smEfAddPrice
+						},
+						success: function(res) {
+							mui.back();
+						},
+						error: function(err) {
+
+						}
+					});
+
+				}
+
+				var newrule = plus.webview.getWebviewById('newrule');
+				mui.fire(newrule, 'customEvent')
+
+			})
+
+		});
+	</script>
+
+</html>

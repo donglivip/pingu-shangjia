@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/refund.css" />
+		<link rel="stylesheet" type="text/css" href="css/mui.css" />
+		<script type="text/javascript" src="js/mui.js"></script>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-aside mui-action-back">
+					<img src="img/block-left.png"/>
+				</div>
+				<div class="header-content">处理退款</div>
+				<div class="header-aside"></div>
+			</div>
+			<div class="main">
+				<div class="main-box">
+					<div class="main-text">订单编号：<span class="number orderNum"></span></div>
+				</div>
+				<!--<div class="main-box">
+					<div class="main-text">买家账号：<span class="number buyer"></span></div>
+				</div>-->
+				<!--<div class="main-box">
+					<div class="main-text">退款类型：<span class="number refundType"></span></div>
+				</div>-->
+				<div class="main-box">
+					<div class="main-text">退款金额：￥<span class="number refundPrice"></span></div>
+				</div>
+				<!--<div class="main-box">
+					<div class="main-text">物流公司名称：<span class="number expressName"></span></div>
+				</div>-->
+				<div class="main-box">
+					<div class="main-text">物流单号：<span class="number express"></span></div>
+				</div>
+				<div class="main-box">
+					<div class="main-text">退款说明：<span class="number remark"></span></div>
+				</div>
+				<!--<div class="main-box">
+					<div class="main-text">退款账户：<span class="number account"></span></div>
+				</div>-->
+				<!--<div class="main-upload">
+					<div class="main-news">上传凭证</div>
+					<img src="img/3 (1).jpg" class="img-img" />
+					<img src="img/2 (2).jpg" class="img-img" />
+					<img src="img/1 (1).jpg" class="img-img" />
+				</div>-->
+				<div class="main-refund">
+					<div class="main-word refundbtn">拒绝退款</div>
+					<div class="main-Agree">同意退款</div>
+				</div>
+			</div>
+
+		</div>
+		<script src="js/jquery-2.1.0.js"></script>
+		<script src="js/url.js"></script>
+		<script type="text/javascript">
+			
+			mui.plusReady(function() {
+				var value = plus.webview.currentWebview().refund_Id;
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/queryRefund",
+					async: true,
+					dataType: 'json',
+					data: {
+						'smOrderId': value
+					},
+					success: function(res) {
+						console.log(res)
+						var refund = res.data;
+						$('.orderNum').text(refund.smOrderId);
+						$('.refundPrice').text(refund.smOrReturnPrice);
+						$('.express').text(refund.smOrExpress);
+						$('.remark').text(refund.smOrRemarks);
+						$('.refundbtn').attr("data-id", refund.smOrderId)
+						$('.main-Agree').attr('data-id', refund.smOrderId)
+					}
+				})
+			})
+
+			$('.refundbtn').click(function() {
+
+				let smOrderId = $(this).data('id');
+				let smOrReturnHandle = '';
+				let btnArray = ['取消', '确定'];
+				console.log(smOrderId);
+				mui.prompt('选填', '', '输入理由', btnArray, function(e) {
+					if(e.index == 1) {
+						let smOrReturnHandle = e.value;
+						$.ajax({
+							type: "post",
+							url: url_url + "/merchant/updateRefundOrder",
+							async: true,
+							data: {
+								'smOrderId': smOrderId,
+								'smOrReturnHandle': smOrReturnHandle,
+								'state': 2
+
+							},
+							success: function(res) {
+								alert('已拒绝')
+								mui.back()
+							},
+							error: function(err) {
+
+							}
+						});
+					} else {
+						
+					}
+				}, 'div')
+
+			})
+
+			$('.main-Agree').click(function() {
+
+				let smOrderId = $(this).data('id');
+				let smOrReturnHandle = '';
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/updateRefundOrder",
+					async: true,
+					data: {
+						'smOrderId': smOrderId,
+						'smOrReturnHandle': smOrReturnHandle,
+						'state': 1
+					},
+					success: function(res) {
+						if(res.status==200){
+								alert('已退款')
+								mui.back()
+						}else{
+							alert(res.msg)
+						}
+					},
+					error: function(err) {
+
+					}
+				});
+			})
+		</script>
+	</body>
+
+</html>

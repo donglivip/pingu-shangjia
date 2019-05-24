@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/Name.css"/>
+		<script type="text/javascript" src="js/dui.js" ></script>
+		<script type="text/javascript" src="js/mui.js" ></script>
+	</head>
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-aside mui-action-back" >
+					<img src="img/block-left.png"/>
+				</div>
+				<div class="header-content">更改店铺名称</div>
+				<div class="header-aside"></div>
+			</div>
+			<div class="main">
+				<input class="main-text" id="name" type="text" placeholder="请输入店铺名"/>
+			</div>
+			<div style="margin-top: 5px;"></div>
+			<div class="main-Submission">提交</div>
+		</div>
+		<script src="js/jquery-2.1.0.js"></script>
+		<script src="js/url.js"></script>
+		<script type="text/javascript">
+			 $(function(){
+			 	$('.main-Submission').click(function(){
+			 		var shopName = $('#name').val();
+			 		var smMerchantId = localStorage.getItem('smMerchantId');
+			 		var smMeUpdateName = localStorage.getItem('smMeUpdateName');
+			 		$.ajax({
+			 			type:"post",
+			 			url:url_url+"/merchant/updateMerchantMessage",
+			 			data:{
+			 				'smMeShopName':shopName,
+			 				'smMerchantId':smMerchantId,
+			 				'smMeUpdateName':smMeUpdateName
+			 			},
+			 			async:true,
+			 			success:function(res){
+			 				if(res.status==200){
+			 					mui.toast('提交成功');
+				 				localStorage.setItem('smMeShopName',shopName);
+				 				var shop = plus.webview.getWebviewById("shop");
+								mui.fire(shop, 'shop', {});
+								var personal = plus.webview.getWebviewById("personal");
+								mui.fire(personal, 'shop', {});
+								mui.back()
+			 				}
+			 			},
+			 			error:function(err){
+			 				console.log(err);
+			 			}
+			 		});
+			 	})
+			 });
+		</script>
+	</body>
+	
+</html>

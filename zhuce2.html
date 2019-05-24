@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/zhuce2.css" />
+		<script type="text/javascript" src="js/dui.js"></script>
+		<script type="text/javascript" src="js/mui.js"></script>
+		<link rel="stylesheet" href="css/home.css" />
+		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="header home">
+				<div class="header-aside" onclick="mui.openWindow('Login.html')">
+					<img src="img/block-left.png" />
+				</div>
+				<div class="header-content" style="color: #FFFFFF;">注册</div>
+				<div class="header-aside"></div>
+			</div>
+			<div class="main">
+				<div class="main-box">
+					<input class="main-text" id="phone" type="text" name="" value="" placeholder="请输入手机号" />
+					<div class="main-news" id="addcode">获取验证码</div>
+				</div>
+				<div class="main-box">
+					<div>
+						<input class="main-text" id="yans" type="text" placeholder="请输入短信验证码" />
+					</div>
+				</div>
+				<div class="main-box">
+					<input class="main-text" id="pass" type="password" placeholder="请设置密码（最少8位数）" />
+					<img src="img/yan.png" />
+				</div>
+				<div class="main-box">
+					<input class="main-text" type="password" placeholder="请重新输入密码（最少8位数）" />
+					<img src="img/yan.png" />
+				</div>
+				<div class="main-word">注册</div>
+				<div class="main-protocol">注册既代表您已阅读并同意《用户登录协议》</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+		<script src="js/ajaxTools.js"></script>
+		<script>
+//			$("#main-word").click(function() {
+//				mui.back()
+//			});
+//			var sendData = {
+//				smMeLegalPhone: phone,
+//				
+//			};
+//			Ajax('get', '/merchant/insertMerchant', sendData, function(data) {
+//				console.log(data);
+//			}, function(error) {
+//				console.log(error);
+//			});
+		</script>
+	</body>
+
+</html>

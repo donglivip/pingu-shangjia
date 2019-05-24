@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/chongzhi.css" />
+	</head>
+	<style type="text/css">
+		select{
+			width: 100%;
+			height: .6rem;
+		}
+	</style>
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-aside mui-action-back">
+					<img src="img/youjian.png" />
+				</div>
+				<div class="header-text">购买商品上限</div>
+				<div class="header-aside"></div>
+			</div>
+			<div class="main">
+				<div class="main-one">
+					<div class="one-top">购买个数</div>
+					<div class="one-bottom">
+						<select v-model="smCommodityNumRuleId">
+							<option value="">请选择购买个数</option>
+							<option :value="val.smCommodityNumRuleId" v-for="val in rule">
+								{{val.smScNum}}
+							</option>
+						</select>
+					</div>
+				</div>
+				<div class="main-two">支付方式</div>
+				<div class="main-three">
+					<div class="three-box" @click="change(1)">
+						<div class="three-text">支付宝</div>
+						<img src="img/xuanzhong (1).png" v-if="status!=1" />
+						<img src="img/tuandui (2).png" v-if="status==1" />
+					</div>
+					<div class="three-box" @click="change(2)">
+						<div class="three-text">微信</div>
+						<img src="img/xuanzhong (1).png" v-if="status!=2" />
+						<img src="img/tuandui (2).png" v-if="status==2" />
+					</div>
+					<div class="three-box" @click="change(3)">
+						<div class="three-text">余额</div>
+						<img src="img/xuanzhong (1).png" v-if="status!=3" />
+						<img src="img/tuandui (2).png" v-if="status==3" />
+					</div>
+				</div>
+			</div>
+			<div class="bottom" @click="myajax">
+				<div class="bottom-text">确认购买</div>
+			</div>
+		</div>
+	</body>
+	<script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/url.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/mui.min.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+		var myvue = new Vue({
+			el: '.wrapper',
+			data: {
+				smUrPrice: '',
+				status: 1,
+				channel: [],
+				rule:[],
+				smCommodityNumRuleId:''
+			},
+			mounted: function() {
+				var that = this
+				// 1. 获取支付通道
+				function plusReady() {
+					// 获取支付通道
+					plus.payment.getChannels(function(channels) {
+						that.channel = channels;
+					}, function(e) {
+						alert("获取支付通道失败：" + e.message);
+					});
+				}
+				if(window.plus) {
+					plusReady();
+				} else {
+					document.addEventListener('plusready', plusReady, false);
+				}
+				this.have()
+			},
+			methods: {
+				change: function(index) {
+					this.status = index
+				},
+				clear: function() {
+					this.smUrPrice = ''
+				},
+				myajax: function() {
+//					plus.nativeUI.showWaiting()
+					var that = this
+					if(that.smCommodityNumRuleId == '') {
+						alert('请选择数量')
+						return false;
+					}
+					var url=''
+					if(that.status == 3) {
+						url='/merchant/paySmCommodityNumWallet'
+					}else{
+						url='/merchant/paySmCommodityNum'
+					}
+					$.ajax({
+						type: "post",
+						url: url_url + url,
+						async: true,
+						dataType: 'json',
+						data: {
+							smMerchantId: localStorage.getItem('smMerchantId'),
+							smCommodityNumRuleId: that.smCommodityNumRuleId,
+							state: that.status
+						},
+						success: function(res) {
+							console.log("res: " + JSON.stringify(res));
+//							plus.nativeUI.closeWaiting()
+							if(that.status == 1) {
+								plus.payment.request(that.channel[0], res.data[0], function(result) {
+									plus.nativeUI.toast('充值成功')
+								}, function(error) {
+									plus.nativeUI.alert("支付失败：" + error.code);
+								});
+							} else if(that.status == 2) {
+								plus.payment.request(that.channel[1], res, function(result) {
+									plus.nativeUI.toast('充值失败')
+								}, function(error) {
+									plus.nativeUI.alert("支付失败：" + error.code);
+								});
+							}else{
+								if(res.status==200){
+									alert('支付成功')
+									mui.back()
+								}else{
+									alert(res.msg)
+								}
+								
+							}
+						},
+						error: function(err) {
+							plus.nativeUI.closeWaiting()
+							alert("网络连接失败，请稍后重试")
+						}
+					});
+				},
+				have:function(){
+					var that = this
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/querySmCommodityNumRule",
+						async: true,
+						dataType: 'json',
+						success: function(res) {
+							that.rule=res.data
+						},
+						error: function(err) {
+							plus.nativeUI.closeWaiting()
+							alert("网络连接失败，请稍后重试")
+						}
+					});
+				}
+			}
+		})
+	</script>
+
+</html>

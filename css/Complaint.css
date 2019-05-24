@@ -1,0 +1,160 @@
+*{
+	margin: 0;padding: 0;font-size: .26rem;
+}
+html,body,.wrapper{width: 100%;height: 100%;}
+.wrapper{
+	background: #F3F3F3 ;
+}
+.header{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: .8rem;
+	background: #D61A0A;
+}
+.header-aside{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: .3rem;
+	margin: .24rem;
+}
+.header-aside img{
+	height: .36rem;
+}
+.header-content{
+    font-size: .34rem;
+	color: #FFFFFF;
+}
+.main-box{
+	height: 1.4rem;
+	background: #FFFFFF;
+	margin-bottom: .16rem;
+}
+.main-tab{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: .24rem .24rem .12rem .24rem ;
+}
+.main-text{
+	font-size: .28rem;
+	color: #333333 ;
+}
+.main-bottom{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding:0 .24rem .24rem .24rem ;
+}
+.main-news{
+	font-size: .28rem;
+	color: #333333 ;
+}
+.main-type{
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	height: 2.12rem;
+	background: #FFFFFF;
+	margin-bottom: .16rem;
+}
+.main-left{
+	margin: .24rem;
+}
+.main-left img{
+	height: 1.64rem;
+}
+.main-right{
+	flex: 1;
+	margin: .24rem .24rem .24rem 0;
+}
+.main-upper{
+	margin-bottom:.32rem ;
+}
+.main-characters{
+	font-size: .32rem;
+	color: #333333;
+}
+.main-lower{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+.main-number{
+	font-size: .32rem;
+	color: #DF3122;
+}
+.main-ride{
+	font-size: .28rem;
+	color: #A2A2A2;
+}
+.main-content{
+	height: 3rem;
+	background: #FFFFFF;
+	margin-bottom: .16rem;
+}
+.main-title{
+	display: flex;
+	align-content: center;
+	justify-content: flex-start;
+	font-size: .28rem;
+	color: #333333;
+	padding:.3rem 0 .12rem .24rem;
+}
+textarea{	
+	border: 1px solid #A2A2A2;
+	height: 1.96rem;
+	width: 6.5rem;
+	margin:0 .24rem .24rem .24rem;
+	border-radius:.08rem ;
+}
+.main-Attached{
+	height: 2.1rem;
+	background: #FFFFFF;
+	border-bottom: 1px solid #F3F3F3;
+}
+.main-word{
+	font-size: .28rem;
+	color: #333333;
+	padding: .24rem 0 0 .24rem;
+}
+.main-Photo{	
+	margin: .12rem .2rem .24rem .24rem;
+	
+}
+.main-Photo img{
+	height: 1.1rem;
+}
+.main-contact{
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	height: 1rem;
+	background: #FFFFFF;
+	
+}
+.main-user{
+	font-size: .28rem;
+	color: #FFFFFF ;
+	padding: .14rem .3rem;
+	background: #D61A0A;
+	border-radius: 2rem;
+	margin-right:.24rem ;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

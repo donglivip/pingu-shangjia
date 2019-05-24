@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/Order-receipt.css" />
+		<link rel="stylesheet" type="text/css" href="css/loading.css" />
+		<script type="text/javascript" src="js/dui.js"></script>
+		<script type="text/javascript" src="js/mui.js"></script>
+		<link rel="stylesheet" href="css/mui.css" />
+		<link rel="stylesheet" href="css/como.css" />
+		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<header class="mui-bar mui-bar-nav home" style="top: 0;-webkit-box-shadow:none;">
+				<a class="mui-action-back mui-pull-left"></a>
+				<h1 class="mui-title" style="color: #FFFFFF;">订单管理</h1>
+			</header>
+			<div class="mui-content" style="padding-top: 38px;"></div>
+			<div class="header">
+				<div>
+					<div id="segmentedControl" class="mui-segmented-control mui-segmented-control-inverted ">
+						<a class="mui-control-item mui-active" href="#item0" id="wait">待接单</a>
+						<a class="mui-control-item" href="#item1" id="unpaid">待支付</a>
+						<a class="mui-control-item" href="#item2" id="unshipped">待发货</a>
+						<a class="mui-control-item" href="#item3" id="norefund">待退款</a>
+						<a class="mui-control-item" href="#item4" id="shipped">已发货</a>
+						<a class="mui-control-item" href="#item5" id="signed">已签收</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="main">
+				<div id="item0" class="mui-control-content mui-active">
+					<div id="scroll-T0" class="mui-scroll-wrapper">
+						<div class="mui-scroll" id="waitList">
+
+						</div>
+					</div>
+				</div>
+
+				<div id="item1" class="mui-control-content">
+					<div id="scroll-T1" class="mui-scroll-wrapper">
+						<div class="mui-scroll" id="unpaidView">
+
+						</div>
+					</div>
+				</div>
+
+				<div id="item2" class="mui-control-content">
+					<div id="scroll-T2" class="mui-scroll-wrapper">
+						<div class="mui-scroll" id="unshippedView">
+
+						</div>
+					</div>
+				</div>
+
+				<div id="item3" class="mui-control-content">
+					<div id="scroll-T3" class="mui-scroll-wrapper">
+						<div class="mui-scroll" id="norefundView">
+
+						</div>
+					</div>
+				</div>
+
+				<div id="item4" class="mui-control-content">
+					<div id="scroll-T4" class="mui-scroll-wrapper">
+						<div class="mui-scroll" id="shippedView">
+
+						</div>
+					</div>
+				</div>
+
+				<div id="item5" class="mui-control-content">
+					<div id="scroll-T5" class="mui-scroll-wrapper">
+						<div class="mui-scroll" id="signedView">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="js/url.js"></script>
+		<script type="text/javascript" src="js/loading.js"></script>
+		<script type="text/javascript">
+			var smUserId = localStorage.getItem('smMerchantId');
+
+			$.ajax({
+				type: "post",
+				url: url_url + "/merchant/queryWaitingList",
+				async: true,
+				data: {
+					smMerchantId: smUserId
+				},
+				success: function(res) {
+					var _waitList = '';
+					if(res.status == 200) {
+						for(var i = 0; i < res.data.length; i++) {
+							_waitList += `<div class="mui-table-view">
+								<div class="main-tab">
+									<div class="main-text">订单号：${res.data[i].smOrderId}</div>
+									<div class="main-time">${res.data[i].smOrCreateTimeString}</div>
+								</div>
+								<div class="main-Photo" data-id="${res.data[i].smOrderId}">
+									<div class="main-left">
+										<img src="${res.data[i].smMeShopImg}" />
+									</div>
+									<div class="main-right">
+										<div class="main-upper">
+											<div class="main-characters">${res.data[i].smMeShopName}</div>
+										</div>
+										<div class="main-lower">
+											<div class="main-number">￥${res.data[i].smOrPrice}</div>
+											<div class="main-ride">x${res.data[i].smOrNum}</div>
+										</div>
+									</div>
+								</div>
+								<div class="main-payment">
+									<div class="main-message">买家留言：${res.data[i].smOrRemarks?res.data[i].smOrRemarks:'无' }</div>
+								</div>
+								<div class="main-bottom">
+								   <div class="main-news">待接单</div>
+								   <button class="main-word cancelItemBtn"  data-id= ${res.data[i].smOrderId}>取消订单 </button>
+								   <button class="main-Buyer sureItemBtn" data-id= ${res.data[i].smOrderId}>确定接单</button>
+								</div>
+							</div>`
+						}
+						$('#waitList').append(_waitList);
+					}
+				},
+				error: function(err) {
+					console.log(err);
+				}
+			});
+			//  取消订单
+			$('body').on('click', '.cancelItemBtn', function() {
+				var smOrderId = $(this).data('id')
+
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/merchantCancellationOfOrders",
+					async: true,
+					data: {
+						smOrderId: smOrderId
+					},
+					success: function(res) {
+						if(res.status == 200) {
+							location.reload()
+						}
+
+					},
+					error: function(err) {
+
+					}
+				});
+			});
+			//  接单
+			$('body').on('click', '.sureItemBtn', function() {
+				var smOrderId = $(this).data('id')
+				console.log(smOrderId);
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/merchantReceipt",
+					async: true,
+					data: {
+						smOrderId: smOrderId
+					},
+					success: function(res) {
+						if(res.status == 200) {
+							plus.nativeUI.toast('接单成功')
+							location.reload()
+						} else {
+							console.log(res)
+						}
+
+					},
+					error: function(err) {
+
+					}
+				});
+			})
+
+			$(function() {
+
+				//				document.getElementById('wait').addEventListener('tap', function() {
+				//					$('#waitList').empty();
+				//					QueryOrder(smUserId, '#waitList');
+				//				});
+
+				document.getElementById('unpaid').addEventListener('tap', function() {
+					$('#unpaidView').empty();
+					QueryOrder(smUserId, 1, '#unpaidView');
+				});
+
+				document.getElementById('unshipped').addEventListener('tap', function() {
+					$('#unshippedView').empty();
+					QueryOrder(smUserId, 2, '#unshippedView');
+				});
+
+				document.getElementById('norefund').addEventListener('tap', function() {
+					$('#norefundView').empty();
+					QueryOrder(smUserId, 3, '#norefundView');
+				});
+
+				document.getElementById('shipped').addEventListener('tap', function() {
+					$('#shippedView').empty();
+					QueryOrder(smUserId, 4, '#shippedView');
+				});
+
+				document.getElementById('signed').addEventListener('tap', function() {
+					$('#signedView').empty();
+					QueryOrder(smUserId, 5, '#signedView');
+				});
+
+			});
+
+			function QueryOrder(smUserId, type, ele) {
+				console.log(smUserId, type, ele);
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/queryOrder",
+					async: true,
+					dataType: 'json',
+					data: {
+						'smUserId': smUserId,
+						'type': type
+					},
+					beforeSend: function() {
+						$('body').loading({
+							loadingWidth: 120,
+							title: '',
+							name: 'test',
+							discription: '',
+							direction: 'column',
+							type: 'origin',
+							originDivWidth: 40,
+							originDivHeight: 40,
+							originWidth: 6,
+							originHeight: 6,
+							smallLoading: false,
+							loadingMaskBg: 'rgba(0,0,0,0.2)'
+						});
+					},
+					complete: function() {
+						removeLoading('test');
+					},
+					success: function(res) {
+						if(res.status == 200) {
+							var _orderHtml = '';
+							var _Xbtn = '';
+							var _order = res.data;
+							for(var i = 0; i < _order.length; i++) {
+								switch(type) {
+									case 1:
+										_Xbtn = '<div class="main-news">已下单未支付</div>'
+										console.log(1);
+										break;
+									case 2:
+										_Xbtn = `<div class="main-news">已支付</div><button class="main-word" id="shippBtn">  发  货  </button>`
+										console.log(2);
+										break;
+									case 3:
+										_Xbtn = `<div class="main-news">已支付</div><button class="main-word" id="refundBtn" data-id= ${_order[i].smOrderId}>处理退款</button>`
+										console.log(3);
+										break;
+									case 4:
+										_Xbtn = `<div class="main-news">已支付</div><button class="main-word">查看物流</button>`
+										console.log(4);
+										break;
+								}
+
+								console.log(_order[i]);
+
+								_orderHtml += `
+								    <div class="mui-table-view">
+								<div class="main-tab">
+									<div class="main-text">订单号：${_order[i].smOrderId}</div>
+									<div class="main-time">${_order[i].smOrCreateTimeString}</div>
+								</div>
+								<div class="main-Photo" data-id="${_order[i].smOrderId}">
+									<div class="main-left">
+										<img src=${_order[i].smMeShopImg} />
+									</div>
+									<div class="main-right">
+										<div class="main-upper">
+											<div class="main-characters">${_order[i].smMeShopName}</div>
+										</div>
+										<div class="main-lower">
+											<div class="main-number">￥${_order[i].smOrPrice}</div>
+											<div class="main-ride">x${_order[i].smOrNum}</div>
+										</div>
+									</div>
+								</div>
+								<div class="main-payment">
+									<div class="main-message">买家留言：${_order[i].smOrRemarks?_order[i].smOrRemarks:'无' }</div>
+								</div>
+								<div class="main-bottom">` + _Xbtn + `
+									<button class="main-Buyer callBuyer" data-id=${_order[i].smUsPhone}>联系买家</button>
+								</div>
+							</div>`;
+							}
+							$(ele).append(_orderHtml);
+
+						} else {
+							
+						}
+
+					},
+					error: function(err) {
+						
+					}
+
+				});
+			};
+
+			//跳转订单详情页面传参
+			mui("body").on('tap', '.main-Photo', function(event) {
+				console.log(this.getAttribute('data-id'));
+				var Order_Id = this.getAttribute('data-id');
+				mui.openWindow({
+					url: 'Order_detail.html',
+					id: 'Order_detail' + Order_Id,
+					extras: {
+						Order_Id: Order_Id
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+
+			});
+
+			//跳转 处理退款页面  传参
+			mui("body").on('tap', '#refundBtn', function(event) {
+				console.log(this.getAttribute('data-id'));
+				var refund_Id = this.getAttribute('data-id');
+				mui.openWindow({
+					url: 'refund.html',
+					id: 'refund' + refund_Id,
+					extras: {
+						refund_Id: refund_Id
+					},
+					waiting: {
+						autoShow: false
+					}
+				});
+			});
+
+			// 完成交易
+			mui("body").on('tap', '#signedBtn', function(event) {
+				let _this = this;
+				let smOrUpdateName = localStorage.getItem('smOrUpdateName');
+				var signed_Id = this.getAttribute('data-id');
+				console.log(signed_Id);
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/updateOrderFinish",
+					data: {
+						'smOrderId': signed_Id,
+						'smOrUpdateName': smOrUpdateName
+					},
+					success: function(res) {
+						$(_this).attr('disabled', true).css('background', '#A2A2A2');
+						location.reload()
+					},
+					error: function() {
+
+					}
+				});
+			});
+
+			// 发货  弹框
+			mui("body").on('tap', '#shippBtn', function(e) {
+				var btnArray = ['取消', '确定'];
+				let _this = this;
+				let smOrderId = $(this).parent().siblings()[1].getAttribute('data-id');
+				console.log(smOrderId + '我是id')
+				e.detail.gesture.preventDefault();
+				mui.prompt('输入快递单号', '', '发货', btnArray, function(e) {
+					if(e.index == 1) {
+						let smOrExpress = e.value;
+						let smOrUpdateName = localStorage.getItem('smOrUpdateName');
+						//						let smOrUpdateName = localStorage.getItem('smMerchantId');
+						console.log(smOrderId);
+						console.log(smOrExpress);
+						console.log(smOrUpdateName);
+						$.ajax({
+							type: "POST",
+							url: url_url + "/merchant/updateShipments",
+							dataType: 'json',
+							async: true,
+							data: {
+								'smOrderId': smOrderId,
+								'smOrExpress': smOrExpress,
+								'smOrUpdateName': smOrUpdateName
+							},
+							success: function(res) {
+								console.log(res);
+								alert('发货成功！');
+								$(_this).attr('disabled', true).css('background', '#A2A2A2');
+							},
+							error: function(res) {
+								alert('请求失败！');
+							}
+						})
+					} else {
+						alert('取消！');
+					}
+				}, 'div')
+			});
+
+			//联系买家
+			mui("body").on('tap', '.callBuyer', function(e) {
+				var phone = $(this).data('id')
+				console.log(phone)
+				var btnArray = ['拨打', '取消'];         
+				mui.confirm('是否拨打' + phone + '?', '提示', btnArray, function(e) {            
+					if(e.index == 0) {               
+						plus.device.dial(phone, false);            
+					}         
+				});
+
+			});
+		</script>
+	</body>
+
+</html>

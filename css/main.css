@@ -1,0 +1,223 @@
+* {
+	margin: 0;
+	padding: 0;
+	font-size: .26rem;
+}
+
+html,
+body,
+.wrapper {
+	width: 100%;
+	height: 100%;
+}
+
+.wrapper {
+	background: #F5F5F5;
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: .96rem;
+	background: linear-gradient(90deg,#FF7552,#FC4149);
+}
+
+.header-aside {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: .24rem;
+	width: 1.5rem;
+}
+
+.header-box {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: .56rem;
+	position: relative;
+}
+
+.header-aside img {
+	height: .56rem;
+	border-radius: 1rem;
+}
+
+.header-text {
+	font-size: .24rem;
+	margin: .12rem 0 0 .12rem;
+	color: #ffffff;
+}
+
+.header-content {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: .34rem;
+	color: #FFFFFF;
+}
+
+.main {
+	flex: 1;
+	height: calc(100% - 1.96rem);
+	position: relative;
+}
+
+.main-state {
+	height: 1.24rem;
+	width: 1.76rem;
+	background: #FFFFFF;
+	border-radius: .08rem;
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin: .2rem 0 0 .24rem;
+	box-shadow: 0 0 2px 2px gainsboro;
+}
+
+.main-block {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding-top: .2rem;
+}
+
+.main-word {
+	font-size: .2rem;
+	color: #333333;
+	margin-left: .12rem;
+}
+
+.main-circular {
+	width: .2rem;
+	height: .2rem;
+	background: #47DB29;
+	border-radius: 1rem;
+}
+
+.main-round {
+	width: .2rem;
+	height: .2rem;
+	background: #A2A2A2;
+	border-radius: 1rem;
+}
+
+.main-container {
+	margin-bottom: .16rem;
+}
+
+.main-box {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 1.36rem;
+	background: #FFFFFF;
+	padding: .2rem;
+	border-bottom: 1px solid #F5F5F5;
+}
+
+.main-left {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: .96rem;
+	width: .96rem;
+	margin: .2rem;
+	background: #6BC4AB;
+	border-radius: .08rem;
+}
+
+.blue {
+	background: #4A90E2;
+}
+
+.main-left img {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: .45rem;
+}
+
+.main-right {
+	flex: 1;
+}
+
+.right-top {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-size: .28rem;
+	color: #333333;
+	margin-right: .24rem;
+}
+
+.main-time {
+	font-size: .28rem;
+	color: #B8B8B8;
+}
+
+.main-sgin {
+	font-size: .24rem;
+	color: #B8B8B8;
+	padding-top: .22rem;
+}
+
+.main-portrait img {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: .96rem;
+	width: .96rem;
+	margin: .2rem;
+	background: #6BC4AB;
+	border-radius: .08rem;
+}
+
+.bottom {
+	display: flex;
+	align-items: center;
+	justify-content: space-around;
+	background: #FFFFFF;
+	height: 1.08rem;
+}
+
+.bottom-box {}
+
+.bottom-box img {
+	height: .38rem;
+}
+
+.bottom-text {
+	font-size: .2rem;
+	color: #A2A2A2;
+}
+
+.bottom-news {
+	font-size: .2rem;
+	color: #DF3122;
+}
+
+.bottom-words {
+	font-size: .2rem;
+	color: #A2A2A2;
+}
+
+.right-top .icon-dian {
+	color: red;
+	font-size: 0.42rem;
+	display: none;
+}
+
+.icon-xiaoxi {
+	color: #fff;
+	font-size: 0.42rem !important;
+}
+
+.state_dian {
+	position: absolute;
+	bottom: -0.3rem;
+	left: 0.2rem;
+	font-size: 0.6rem !important;
+	color: #47DB29;
+}
