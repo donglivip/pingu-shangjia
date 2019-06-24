@@ -78,6 +78,12 @@
 					<input class="main-text" type="password" id="pwd" placeholder="登录密码" />
 				</div>
 				<div class="main-box">
+					<input class="main-text" type="password" id="smMeQq" placeholder="qq号码" />
+				</div>
+				<a class="main-box" style="padding: .2rem;" href="http://www.sscmwl.com/ssgd/377.html">
+					需要开启临时会话功能才可以使用客服功能，点我查看如何开启临时会话！
+				</a>
+				<div class="main-box">
 					<input class="main-text" type="text" id="idCardNum" placeholder="身份证号码" />
 				</div>
 				<div class="main-bottom">
@@ -121,7 +127,7 @@
 					</div>
 				</div>
 				<div class="main-bottom">
-					<div class="main-trademark">上传店铺商标（选填）</div>
+					<div class="main-trademark">上传店铺门招（选填）</div>
 					<img src="img/Addto.png" class="img-img" id="shopLogo" />
 				</div>
 				<div class="main-Photo">
@@ -129,6 +135,9 @@
 					<img src="img/license.png" class="img-img licenseImg" id="license" />
 				</div>
 			</div>
+		</div>
+		<div class="main-one xie">
+			<span onclick="plus.runtime.openWeb('baidu.com')">注册即视为同意《用户注册协议》</span>
 		</div>
 		<div class="bottom">
 			<button class="bottom-text" id="submit" style="height: 45px;">实名认证</button>
@@ -288,7 +297,7 @@
 					let smMeCardBackImg = $('#idCardBack').attr('src');
 					let smMeShopImg = $('#shopLogo').attr('src');
 					let smMeBusinessLicenesImg = $('#license').attr('src');
-
+					let smMeQq = $('#smMeQq').val();
 					//验证
 
 					if(smShopTypeId == 0) {
@@ -355,6 +364,10 @@
 						alert('请输入市场')
 						return false
 					}
+					if(smMeQq == '') {
+						alert('请输入qq')
+						return false
+					}
 					if(smMeCardFrontImg == 'img/ID.png') {
 						alert('请上传身份证正面照')
 						return false
@@ -379,6 +392,7 @@
 							'smMeLegalPerson': smMeLegalPerson,
 							'smMeLegalPhone': smMeLegalPhone,
 							'smMePassword': smMePassword,
+							smMeQq:smMeQq,
 							'smMeCardNo': smMeCardNo,
 							'smMeAddress': smMeAddress,
 							'smMeCardFrontImg': smMeCardFrontImg,

@@ -13,10 +13,10 @@
 
 	<body>
 		<nav class="mui-bar mui-bar-tab home" id="tabBar">
-			<a class="mui-tab-item mui-active"  id="index.html">
+			<!-- <a class="mui-tab-item mui-active"  id="index.html">
 				<span class="mui-icon"><img src="img/xiaoxi.png"/></span>
 				<span class="mui-tab-label">消息</span>
-			</a>
+			</a> -->
 			<a class="mui-tab-item"  id="Order_receipt.html">
 				<span class="mui-icon"><img src="img/dingdan.png"/></span>
 				<span class="mui-tab-label">订单</span>
@@ -33,14 +33,7 @@
 		<script type="text/javascript" charset="utf-8">
 			
 			mui.init({
-				subpages: [{
-						url: 'index.html',
-						id: 'index.html',
-						styles: {
-							top: '0',
-							bottom: '50px'
-						}
-					},
+				subpages: [
 					{
 						url: 'Order_receipt.html',
 						id: 'Order_receipt.html',
@@ -61,6 +54,12 @@
 			});
 			function plusReady() {
 				plus.navigator.setStatusBarBackground('#F55353');
+				if(localStorage.getItem('smMerchantId')==null||localStorage.getItem('smMerchantId')==undefined){
+					mui.openWindow({
+						url:'Login.html',
+						id:'Login'
+					})
+				}
 				window.addEventListener('homeReady', function() {
 					var view = plus.webview.getWebviewById('index.html');
 					view.show();

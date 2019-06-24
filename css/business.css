@@ -17,7 +17,7 @@ body,
 	width: 100%;
 	background: #F3F3F3;
 }
-
+.xie{text-align: right;margin: .2rem .2rem 0 0;}
 .header {
 	display: flex;
 	align-items: center;

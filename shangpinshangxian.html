@@ -30,7 +30,7 @@
 						<select v-model="smCommodityNumRuleId">
 							<option value="">请选择购买个数</option>
 							<option :value="val.smCommodityNumRuleId" v-for="val in rule">
-								{{val.smScNum}}
+								{{val.smScNum}} - ￥{{val.smScPrice}}
 							</option>
 						</select>
 					</div>

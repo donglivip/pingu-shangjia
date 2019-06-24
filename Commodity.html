@@ -23,6 +23,7 @@
 				left: 0;
 				overflow: scroll;
 				width: 100%;
+				background: ghostwhite;
 			}
 
 			.mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active {
@@ -177,6 +178,7 @@
 				                 		<p>出售中</p>
 				                 		<div data-id=${res.data[i].smCommodityId}>
 				                 			<button class="delete">删除</button>
+											<button class="bianji">编辑</button>
 				                 			<button class="Lowershelf">下架</button>
 				                 		</div>
 				                 	</div>
@@ -189,15 +191,17 @@
 				                 		<p>已下架</p>
 				                 		<div data-id=${res.data[i].smCommodityId}>
 				                 			<button class="delete">删除</button>
+											<button class="bianji">编辑</button>
 				                 			<button class="Uppershelf">上架</button>
 				                 		</div>
 				                 	</div>
 				                 </section>`
 								};
+								res.data[i].smCoDefaultImg=JSON.parse(res.data[i].smCoDefaultImg)
 								goodsHtml +=
 									`<section class="Commodity-item">
 				                 	<div class="item-detail">
-				                 		<img src="${res.data[i].smCoDefaultImg}" alt="" />
+				                 		<img src="${res.data[i].smCoDefaultImg[0]}" alt="" />
 				                 		<div>
 				                 			<p>${res.data[i].smCoName}</p>
 				                 			<p>创建时间：<span>${creatDate}</span></p>
@@ -239,7 +243,11 @@
 						}
 					});
 				}
-
+				// 编辑商品
+				mui('body').on('tap', '.bianji', function() {
+					localStorage.setItem('shangpinid',$(this).parent().data('id'))
+					mui.openWindow('bianji.html','bianji')
+				});
 				// 删除商品
 				mui('body').on('tap', '.delete', function() {
 					let id = $(this).parent().data('id');

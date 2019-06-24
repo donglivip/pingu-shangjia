@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="css/shoping.css" />
+		<link rel="stylesheet" href="css/wangEditor-mobile.css" />
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="css/mui.css" />
+		<script src="js/mui.min.js"></script>
+		<style>
+			.banner-txt {
+				color: #666;
+				padding: 0.24rem;
+			}
+			
+			.wangEditor-mobile-txt {
+				border: 1px solid gainsboro;
+			}
+			
+			select {
+				width: 2rem !important;
+				padding: 0 0 !important;
+				/*padding-right: 0.24rem;*/
+				text-align: center;
+				text-align-last: center;
+				margin-bottom: 0 !important;
+			}
+			
+			input {
+				font-size: 0.26rem;
+				line-height: 0.2rem;
+				height: 0.6rem !important;
+				border: 0 !important;
+				margin-bottom: 0 !important;
+				background: none !important;
+				outline: 0;
+				padding: 0 !important;
+			}
+			
+			#zhe {
+				width: 3rem !important;
+				text-align: center;
+			}
+			.wangEditor-mobile-txt{width: calc(100% - .4rem);margin: .2rem;}
+		</style>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="heade-aside mui-action-back">
+					<img src="img/youjian.png" />
+				</div>
+				<div class="hedaer-center">
+					编辑商品
+				</div>
+				<div class="heade-aside">
+
+				</div>
+			</div>
+			<div class="main">
+				<div class="shop-box">
+					<div class="shop-top">
+						<span><strong>* </strong>活动关键字</span>
+						<span class="title-length"></span>
+					</div>
+					<textarea class="title title01" placeholder="请输入活动关键字" maxlength="60"></textarea>
+					<div class="shop-top">
+						<span><strong>* </strong>标题</span>
+						<span class="title-length"></span>
+					</div>
+					<textarea class="title title02" placeholder="请输入商品标题" maxlength="60"></textarea>
+					<div class="shop-top">
+						<span><strong>* </strong>商品图片 <small>(单击图片可取消已上传图片)</small></span>
+						<span class="title-lengt"></span>
+					</div>
+					<div class="img-box">
+						<img src="img/upload.png" id="itemImg" />
+					</div>
+					<p class="banner-txt">请输入商品简介</p>
+					<textarea id="textarea1" style="width:100%;height:100%;border: 1px solid gainsboro;" value="请输入商品简介">
+
+                    </textarea>
+				</div>
+				<div class="shop-box">
+					<div class="input-box">
+						<label for="">规格</label>
+					</div>
+					<!--<div class="input-box">
+						<label for="" style="flex: 1;"> <small>规格类型</small>尺寸</label>
+						<img src="img/you-hui.png" />
+					</div>-->
+					
+					<div class="gui-add specAdd">
+						<img src="img/add.png" /> 添加规格
+					</div>
+				</div>
+				<div class="shop-box">
+					<div class="input-box">
+						<label for="">参数</label>
+					</div>
+					<!--<div class="input-box">
+						<label for="" style="flex: 1;"> <small>规格类型</small>尺寸</label>
+						<img src="img/you-hui.png" />
+					</div>-->
+					<div class="gui-box parameter">
+						
+					</div>
+					<div class="gui-add parameterBtn">
+						<img src="img/add.png" /> 添加参数
+					</div>
+				</div>
+				<div class="shop-box">
+					<div class="input-box">
+						<label for="">颜色</label>
+					</div>
+					<div class="gui-box yanse">
+					</div>
+					<div class="gui-add addyan">
+						<img src="img/add.png" /> 添加颜色
+					</div>
+				</div>
+				<div class="shop-box">
+					<div class="input-box">
+						<label for="">价格和库存</label>
+					</div>
+					<div class="input-box" style="display: flex;justify-content: space-between;">
+						<label for="">价格</label>
+						<input type="text" id="price" placeholder="请输入默认价格" style="padding-left: 1rem;width: 4.2rem;" />
+					</div>
+					<div class="input-box" style="display: flex;justify-content: space-between;">
+						<label for="">库存</label>
+						<input type="text" id="stock" placeholder="请输入库存" style="padding-left: 1rem;width: 4.2rem;" />
+					</div>
+					<div class="input-box">
+						<label for="">分类</label>
+						<select name="CommType" id="TypeOne">
+
+						</select>
+					</div>
+
+				</div>
+				<div class="btn">
+					编辑
+				</div>
+			</div>
+		</div>
+
+		<script src="js/jquery-2.1.0.js"></script>
+		<script src="js/zepto.js"></script>
+		<script src="js/zepto.touch.js"></script>
+		<script src="js/url.js"></script>
+		<script src="js/wangEditor-mobile.js"></script>
+		
+		<script src="js/upload01.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+
+				var editor = new ___E('textarea1');
+				editor.init();
+				editor.config.uploadImgUrl = url_url + '/merchant/uploads';
+				//判断是否 设置运费模版  
+				var smMerchantId = localStorage.getItem('smMerchantId'),
+				imglist=[],
+				smCoColour=[],
+				fendata=[],
+				neirong=''
+				// 删除图片
+				$('.img-box').on('click','img',function(){
+					var index=$(this).index()
+					if(index>0){
+						imglist.splice(index-1,1)
+						$('.img-box img').eq(index).remove()
+					}
+				})
+				$.ajax({
+					type: "post",
+					url: url_url + '/merchant/queryExpressCount',
+					async: true,
+					data: {
+						smMerchantId: smMerchantId
+					},
+					success: function(res) {
+						
+						if(!res.data) {
+							mui.alert('请先设置运费模板', function() {
+								mui.openWindow('freight.html')
+							})
+						}
+					}
+				});
+				// 获取分类
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/querySmCommodityType",
+					async: true,
+					data: {
+						'smMerchantId': smMerchantId
+					},
+					success: function(res) {
+						var typeHtml = ''
+						if(res.data.length == 0 || res.data == null) {
+							alert('请先添加分类')
+						} else {
+							fendata=res.data
+							for(i in res.data) {
+								$('#TypeOne').append(`
+									<option value=${res.data[i].smCommodityTypeId}>${res.data[i].smCtResult}</option>
+								`)
+							}
+						}
+					}
+				});
+				<!-- // 获取详情回显 -->
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/querySmCommodity",
+					async: true,
+					data: {
+						smCommodityId: localStorage.getItem('shangpinid')
+					},
+					success: function(res) {
+						$('.title01').html(res.data.smCoActivity)
+						$('.title02').html(res.data.smCoName)
+						if(res.data.smCoResult!=null){
+							editor.$txt.html(res.data.smCoResult)
+						}
+						$('#price').val(res.data.smCoDefaultPrice)
+						$('#stock').val(res.data.smCoStock)
+						for (i in fendata) {
+							if(fendata[i].smCommodityTypeId==res.data.smCommodityTypeId){
+								$('option').eq(i).click()
+							}
+						}
+						<!-- 颜色回显 -->
+						var ydata=JSON.parse(res.data.smCoColour)
+						for (i in ydata) {
+							$('.yanse').append(`
+								<div class="gui-tab">
+									<div class="gui-title">
+										颜色
+									</div>
+									<input type="text" class="yanval" placeholder="请输入颜色" value='${ydata[i]}'>
+								</div>
+							`)
+						}
+						<!-- 规格回显 -->
+						var gdata=JSON.parse(res.data.smCoFarmat)
+						Object.keys(gdata).forEach(function(key){
+							$('.specAdd').before(`
+								<div class="gui-box specWrap">
+									<div class="gui-tab">
+										<div class="gui-title">
+											名称
+										</div>
+										<input type="text" placeholder="请输入名称" value='${key}'/>
+									</div>
+									<div class="gui-tab">
+										<div class="gui-title">
+											单价
+										</div>
+										<input type="text" placeholder="请输入单价"  value='${gdata[key]}'/>
+									</div>
+								</div>
+							`)
+						});
+						<!-- 品牌回显 -->
+						var pdata=JSON.parse(res.data.smCoParameter)
+						Object.keys(pdata).forEach(function(key){
+							$('.parameter').append(`
+								<div class="gui-tab">
+									<div class="gui-title">
+										<input type="text" class="paraKey" placeholder="输入参数" value='${key}'/>
+									</div>
+									<input type="text" class="val" placeholder="请输入品牌" value='${pdata[key]}'>
+								</div>
+							`)
+						});
+						<!-- banner回显 -->
+						imglist=JSON.parse(res.data.smCoDefaultImg)
+						for (i in imglist) {
+							$('.img-box').append(`
+								<img src="${imglist[i]}"/>
+							`)
+						}
+					}
+				});
+				$('.addyan').click(function(){
+					$('.yanse').append(`
+						<div class="gui-tab">
+							<div class="gui-title">
+								颜色
+							</div>
+							<input type="text" class="val" placeholder="请输入颜色" />
+						</div>
+					`)
+				})
+				$('.specAdd').click(function() {
+					var guiList =
+						`
+					<div class="gui-tab">
+							<div class="gui-title">
+								名称
+							</div>
+							<input type="text" placeholder="请输入名称" />
+						</div>
+						<div class="gui-tab">
+							<div class="gui-title">
+								单价
+							</div>
+							<input type="text" placeholder="请输入单价" />
+						</div>
+					`;
+
+					$('.specWrap').append(guiList);
+				});
+				$('.parameterBtn').click(function() {
+					var guiList =
+						`
+					<div class="gui-tab">
+							<div class="gui-title2">
+								<input type="text" class="paraKey" placeholder="输入参数" />
+							</div>
+							<input type="text" class="val" placeholder="请输入参数值" />
+						</div>
+						
+					`;
+
+					$('.parameter').append(guiList);
+				})
+
+				$('#itemImg').on('click', function() {
+					$(this).upload('/merchant/insertCommodityImage');
+				});
+
+				//  添加商品
+				$('.btn').click(function() {
+					for (var i = 0; i < $('.yanval').length; i++) {
+						if($('.yanval').eq(i).val()!=''){
+							smCoColour.push($('.yanval').eq(i).val())
+						}
+					}
+					var smMerchantId = localStorage.getItem('smMerchantId');
+					//规格
+					var numArr = new Array();
+					var flag = true;
+					$('.specWrap input').each(function() {
+						if($(this).val() == '') {
+							flag = false;
+							alert('请将规格输入完整');
+							return false
+						} else {
+							flag = true;
+							numArr.push($(this).val()); //添加至数组
+						}
+					});
+
+					if(!flag) {
+						return false;
+					}
+					var guige = {}
+					for(var i in numArr) {
+						if(i % 2 == 0) {
+							var key = numArr[i]
+							var value = numArr[parseInt(i) + 1]
+							guige[key] = value;
+						}
+					}
+					console.log(guige)
+					//参数
+					var keyArr = new Array();
+					var valArr = new Array();
+
+					$('.parameter .paraKey').each(function() {
+						if($(this).val() == '') {
+							flag = false;
+							alert('参数名称不能为空');
+							return false
+						} else {
+							flag = true;
+							keyArr.push($(this).val())
+						}
+
+					});
+					if(!flag) {
+						return false;
+					}
+					$('.parameter .val').each(function() {
+						if($(this).val() == '') {
+							flag = false;
+							alert('参数内容不能为空');
+							return false
+						} else {
+							flag = true;
+							valArr.push($(this).val())
+						}
+
+					});
+					var canshu = {}
+					for(var i in keyArr) {
+						var key = keyArr[i]
+						var value = valArr[i]
+						canshu[key] = value;
+					}
+
+					console.log(canshu)
+					if(!flag) {
+						return false;
+					}
+					console.log(JSON.stringify(canshu))
+					if(imglist.length==0) {
+						flag = false;
+						alert('请上传默认图片')
+					} else {
+						smCoDefaultImg = JSON.stringify(imglist);
+					}
+					if(!flag) {
+						return false;
+					}
+					var smCommodityTypeId = $('#TypeOne').val();
+					if(smCommodityTypeId == '') {
+						flag = false;
+						alert('请选择分类');
+					}
+					if(!flag) {
+						return false;
+					}
+					var smCoDefaultPrice = $('#price').val()
+					if(smCoDefaultPrice == '') {
+						flag = false;
+						alert('请输入默认价格');
+					}
+					if(!flag) {
+						return false;
+					}
+					var smCoStock = $('#stock').val();
+					if(smCoStock == '') {
+						flag = false;
+						alert('请输入库存');
+					}
+					if(!flag) {
+						return false;
+					}
+					if(!flag) {
+						return false;
+					}
+					var huodong = $('.title01').val();
+					var smCoName = $('.title02').val();
+					if(smCoName == '') {
+						flag = false;
+						alert('请输入标题');
+					}
+					if(!flag) {
+						return false;
+					}
+					//富文本 内容
+					var $txt = editor.$txt;
+					var smCoResult = $txt.html()
+
+					var smCoCreateName = localStorage.getItem('smMeCreateName')
+					var smMerchantId = localStorage.getItem('smMerchantId')
+
+					var smCoIsBanner = null;
+					var smCoBannerImg = null;
+
+					if($('#bannerImg').attr('src') == 'img/upload.png') {
+						smCoIsBanner = 2
+						smCoBannerImg = '';
+					} else {
+						smCoIsBanner = 1
+						smCoBannerImg = $('#bannerImg').attr('src')
+					}
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/updateSmCommodity",
+						async: true,
+						data: {
+							smCommodityId:localStorage.getItem('shangpinid'),
+							smCommodityTypeId: smCommodityTypeId,
+							smCoFarmat: JSON.stringify(guige),
+							smCoParameter: JSON.stringify(canshu),
+							smCoName: smCoName,
+							smCoDefaultPrice: smCoDefaultPrice,
+							smCoIsDiscount: 2,
+							smCoStock: smCoStock,
+							smCoSalesVolume: 0,
+							smCoEvaluateGrade: 5,
+							smCoIsFreeShipping: 1,
+							smCoIsShelf: 1,
+							smMerchantId: smMerchantId,
+							smCoCreateName: smMerchantId,
+							smCoDefaultImg: JSON.stringify(imglist),
+							smCoResult: smCoResult,
+							smCoActivity:huodong,
+							smCoColour:JSON.stringify(smCoColour)
+						},
+						success: function(res) {
+							if(res.status == 200) {
+								mui.toast('编辑成功')
+								mui.back()
+							} else {
+								alert(res.msg)
+							}
+						},
+						error: function(err) {
+							alert(JSON.stringify(err))
+						}
+					});
+
+				})
+		</script>
+	</body>
+
+</html>

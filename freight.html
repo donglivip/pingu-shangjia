@@ -102,8 +102,7 @@
 			//跳转到 新增 运费模版页面 进行修改设置
 			$('body').on('click', '.rule-box', function() {
 				let mainId = $(this).data('id');
-
-				console.log(mainId);
+				localStorage.setItem('yunfeidid',mainId)
 				mui.openWindow({
 					url: 'newrule.html',
 					id: 'newrule',

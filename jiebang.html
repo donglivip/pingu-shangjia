@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/My-wallet.css" />
+		<link rel="stylesheet" type="text/css" href="css/mui.min.css" />
+		<script type="text/javascript" src="js/dui.js"></script>
+		<script type="text/javascript" src="js/mui.js"></script>
+		<script type="text/javascript" src="js/rem.js"></script>
+	</head>
+	<style type="text/css">
+		.main-word{flex: 1;}
+		button{margin-right: .2rem;}
+	</style>
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-aside">
+					<img class="mui-action-back" src="img/block-left.png" />
+				</div>
+				<div class="header-content">我的推荐</div>
+				<div class="header-text jump" style="white-space: nowrap;position: relative;right: .3rem;">
+					分享分钱规则
+				</div>
+			</div>
+			<div class="main">
+				
+			</div>
+		</div>
+		<script src="js/url.js"></script>
+		<script src="js/jquery-2.1.0.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				$('.jump').click(function(){
+					mui.openWindow('fguize.html','fguize')
+				})
+				function myajax(){
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/querySmOrderByBindId",
+						dataType: 'json',
+						async: true,
+						data: {
+							smMerchantId: localStorage.getItem("smMerchantId"),
+						},
+						success: function(res) {
+							$('.main').html('')
+							for (i in res.data) {
+								$('.main').append(`
+									<div class="main-box forward">
+										<div class="main-word">${res.data[i].phone}</div>
+										<button myid='${res.data[i].id}' mytype='${res.data[i].type}'>解绑</button>
+									</div>
+								`)
+							}
+						},
+						error: function(err) {
+							console.log(err);
+						}
+					});
+				}
+				myajax()
+				$('.main').on('click','button',function(){
+					var id=$(this).attr('myid')
+					var type=$(this).attr('mytype')
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/insertSmMerchantBind",
+						dataType: 'json',
+						async: true,
+						data: {
+							smMerchantId: localStorage.getItem("smMerchantId"),
+							smUserId:id,
+							smMdType:type
+						},
+						success: function(res) {
+							myajax()
+						},
+						error: function(err) {
+							console.log(err);
+						}
+					});
+				})
+			})
+		</script>
+	</body>
+</html>

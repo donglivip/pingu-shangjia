@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link rel="stylesheet" type="text/css" href="css/shoping.css" />
+		<link rel="stylesheet" href="css/wangEditor-mobile.css" />
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="css/mui.css" />
+		<script src="js/mui.min.js"></script>
+		<style>
+			.banner-txt {
+				color: #666;
+				padding: 0.24rem;
+			}
+			
+			.wangEditor-mobile-txt {
+				border: 1px solid gainsboro;
+				margin: .2rem;
+				width: calc(100% - .4rem);
+			}
+			
+			select {
+				width: 2rem !important;
+				padding: 0 0 !important;
+				/*padding-right: 0.24rem;*/
+				text-align: center;
+				text-align-last: center;
+				margin-bottom: 0 !important;
+			}
+			
+			input {
+				font-size: 0.26rem;
+				line-height: 0.2rem;
+				height: 0.6rem !important;
+				border: 0 !important;
+				margin-bottom: 0 !important;
+				background: none !important;
+				outline: 0;
+				padding: 0 !important;
+			}
+			
+			#zhe {
+				width: 3rem !important;
+				text-align: center;
+			}
+			.btn{position: fixed;bottom: 0;left: 0;}
+		</style>
+	</head>
+
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="heade-aside mui-action-back">
+					<img src="img/youjian.png" />
+				</div>
+				<div class="hedaer-center">
+					企业简介
+				</div>
+				<div class="heade-aside">
+
+				</div>
+			</div>
+			<div class="main">
+				<div class="shop-box">
+					<p class="banner-txt">请输入企业简介</p>
+					<textarea id="textarea1" style="width:100%;height:100%;border: 1px solid gainsboro;" value="请输入商品简介">
+
+                    </textarea>
+				</div>
+				<div class="btn">
+					创建
+				</div>
+			</div>
+		</div>
+
+		<script src="js/jquery-2.1.0.js"></script>
+		<script src="js/zepto.js"></script>
+		<script src="js/zepto.touch.js"></script>
+		<script src="js/url.js"></script>
+		<script src="js/wangEditor-mobile.js"></script>
+		
+		<script src="js/upload.js"></script>
+		<script type="text/javascript">
+
+			$(function() {
+				$.ajax({
+					type: "post",
+					url: url_url + "/user/selectSmMerchantId",
+					async: true,
+					dataType: 'json',
+					data: {
+						smMerchantId: localStorage.getItem('smMerchantId'),
+						smUserId: ''
+					},
+					success: function(res) {
+						if(res.status == 200) {
+							//               富文本初始化
+							var editor = new ___E('textarea1');
+							editor.init();
+							editor.config.uploadImgUrl = url_url + '/merchant/uploads';
+							editor.$txt.html(res.data.smMeIntroduce)
+							//  添加商品
+							$('.btn').click(function() {
+								var smMerchantId = localStorage.getItem('smMerchantId');
+								//富文本 内容
+								var $txt = editor.$txt;
+								var smCoResult = $txt.html()
+								$.ajax({
+									type: "post",
+									url: url_url + "/merchant/updateMerchantIntroduce",
+									async: true,
+									data: {
+										smMerchantId:smMerchantId,
+										smMeIntroduce: smCoResult
+									},
+									success: function(res) {
+										if(res.status == 200) {
+											mui.toast('添加成功')
+											mui.back()
+										} else {
+											alert(res.msg)
+										}
+									},
+									error: function(err) {
+										alert(JSON.stringify(err))
+									}
+								});
+							
+							})
+						} else {
+							alert(res.msg)
+						}
+					},
+					error: function(err) {
+						alert("网络连接失败，请稍后重试")
+					}
+				});
+				
+
+			})
+		</script>
+	</body>
+
+</html>

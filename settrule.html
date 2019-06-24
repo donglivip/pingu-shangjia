@@ -70,10 +70,10 @@
 			<div class="main">
 
 				<p type="text" id="address">选择地区</p>
-				<input type="text" id="firstNum" placeholder="x件" />
-				<input type="text" id="firstPri" placeholder="x元" />
-				<input type="text" id="addNum" placeholder="每增加x件" />
-				<input type="text" id="addPri" placeholder="增加x元" />
+				<input type="hidden" id="firstNum" placeholder="x件" value="0"/>
+				<input type="hidden" id="firstPri" placeholder="x元"  value="0"/>
+				<input type="hidden" id="addNum" placeholder="每增加x件"  value="0"/>
+				<input type="hidden" id="addPri" placeholder="增加x元"  value="0"/>
 			</div>
 		</div>
 	</body>
@@ -139,7 +139,13 @@
 							smEfAddPrice: smEfAddPrice
 						},
 						success: function(res) {
-							mui.back()
+							if(res.status==200){
+								mui.openWindow({
+									url:'shop.html'
+								})
+							}else{
+								alert(res.msg)
+							}
 						},
 						error: function(err) {
 
@@ -160,7 +166,13 @@
 							smEfAddPrice: smEfAddPrice
 						},
 						success: function(res) {
-							mui.back();
+							if(res.status==200){
+								mui.openWindow({
+									url:'shop.html'
+								})
+							}else{
+								alert(res.msg)
+							}
 						},
 						error: function(err) {
 
@@ -172,6 +184,7 @@
 						type: "post",
 						url: url_url + "/merchant/insertExpress",
 						async: true,
+						dataType:'json',
 						data: {
 							smMerchantId: smMerchantId,
 							smEtName: smEtName,
@@ -186,7 +199,14 @@
 							smEfAddPrice: smEfAddPrice
 						},
 						success: function(res) {
-							mui.back();
+							if(res.status==200){
+								mui.plusReady(function() {
+									plus.runtime.restart();
+								})
+							}else{
+								alert(res.msg)
+							}
+							
 						},
 						error: function(err) {
 
@@ -194,9 +214,6 @@
 					});
 
 				}
-
-				var newrule = plus.webview.getWebviewById('newrule');
-				mui.fire(newrule, 'customEvent')
 
 			})
 

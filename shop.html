@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html>
-
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/mui.min.css"/>
 		<link rel="stylesheet" type="text/css" href="css/shop.css" />
 		<link rel="stylesheet" type="text/css" href="css/iconfont.css" />
 		<script type="text/javascript" src="js/mui.js"></script>
 		<script type="text/javascript" src="js/dui.js"></script>
 		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
 	</head>
-
 	<body>
 		<div class="wrapper">
 			<div class="header">
@@ -42,7 +41,7 @@
 
 				<div class="main-status">
 					<i class="iconfont icon-mingpian"></i>
-					<div class="main-my">会员管理</div>
+					<div class="main-my">分销价格管理</div>
 				</div>
 				<div class="main-status">
 					<img src="./img/guangg.png" />
@@ -52,7 +51,8 @@
 			<div class="main-Administration">
 				<div class="main-status">
 					<i class="iconfont icon-pingtaishenhe"></i>
-					<div class="main-my">审核管理</div>
+					<div class="main-my">分销商审核管理</div>
+					<div class="num">0</div>
 				</div>
 
 				<div class="main-status">
@@ -65,6 +65,7 @@
 				</div>
 			</div>
 			<div class="main-type">
+			
 				<div class="main-tips">
 					<img src="img/Setup.png" />
 					<div class="main-classification">店铺设置</div>
@@ -77,23 +78,53 @@
 					<img src="img/about.png" />
 					<div class="main-classification">关于我们</div>
 				</div>-->
-				<a class="main-tips" href='tel:18952168237'>
+				<a class="main-tips" href='tel:4006010751'>
 					<img src="img/Customer.png" />
 					<div class="main-classification">官方客服</div>
 				</a>
 				<div class="main-tips">
-					<img src="img/Setup.png" />
+					<img src="img/commodity.png" >
 					<div class="main-classification">分类管理</div>
+				</div>
+				<div class="main-tips">
+					<img src="img/Complaint.png" >
+					<div class="main-classification">企业简介</div>
+				</div>
+					<div class="main-tips">
+					<img src="img/about.png" >
+					<div class="main-classification">分享店铺</div>
+				</div>
+				<div class="main-tips">
+					<img src="img/commodity.png" >
+					<div class="main-classification">我的推荐</div>
 				</div>
 			</div>
 		</div>
 		</div>
 		<script type="text/javascript" src="js/url.js"></script>
 		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+		<script src="js/upload03.js" type="text/javascript" charset="utf-8"></script>
 		<script>
+			$('#img_img_id').on('click', function() {
+				$(this).upload('/merchant/insertCommodityImage');
+			});
 			var shopLogo = localStorage.getItem('smMeShopImg'); //店铺图片
-
-						$('#img_img_id').attr('src',shopLogo);
+			$.ajax({
+				type: "post",
+				url: url_url + "/merchant/queryMyVip",
+				async: true,
+				data: {
+					'smMerchantId': localStorage.getItem('smMerchantId'),
+					'type': '2'
+				},
+				success: function(res) {
+					$('.num').html(res.data.length)
+				},
+				error: function(err) {
+					console.log(err);
+				}
+			});
+			$('#img_img_id').attr('src',shopLogo);
 			$('.header-text').text(localStorage.getItem('smMeShopName'))
 
 			var main_status = document.getElementsByClassName("main-status");
@@ -101,7 +132,15 @@
 
 			//我的钱包
 			main_status[0].addEventListener("tap", function() {
-				dui.jump("My-wallet.html", "My-wallet");
+				mui.prompt('请输入密码','密码','请输入密码',['取消','确定'],function(e){
+					if(e.index==1){
+						if(e.value==localStorage.getItem("mima")){
+							dui.jump("My-wallet.html", "My-wallet");
+						}else{
+							alert('密码错误')
+						}
+					}
+				})
 			})
 			//投诉管理
 			main_status[1].addEventListener("tap", function() {
@@ -124,10 +163,6 @@
 				dui.jump("shoping.html", "shoping");
 			})
 
-			//更换头像
-			img_img_id.addEventListener("tap", function() {
-				dui.jump("personal.html", "personal");
-			})
 
 			//店铺设置
 			main_tips[0].addEventListener("tap", function() {
@@ -146,6 +181,17 @@
 			//分类管理
 			main_tips[3].addEventListener("tap", function() {
 				dui.jump("addType.html", "addType");
+			})
+			//企业管理
+			main_tips[4].addEventListener("tap", function() {
+				dui.jump("jianjie.html", "jianjie");
+			})
+			//分享
+			main_tips[5].addEventListener("tap", function() {
+				dui.jump("share.html", "share");
+			})
+			main_tips[6].addEventListener("tap", function() {
+				dui.jump("jiebang.html", "jiebang");
 			})
 			mui.plusReady(function() {
 				document.addEventListener('shop', function() {

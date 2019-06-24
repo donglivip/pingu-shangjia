@@ -18,13 +18,13 @@
 					<img src="img/block-left.png" />
 				</div>
 				<div id="main">
-					<div class="header-content">会员管理</div>
-					<div style="margin-right: 0.2rem; font-size: 0.28rem; color: white;" onclick="mui.openWindow('MemberDiscount.html')">编辑会员规则</div>
+					<div class="header-content">分销商管理</div>
+					<div style="margin-right: 0.2rem; font-size: 0.28rem; color: white;" onclick="mui.openWindow('MemberDiscount.html')">编辑分销商规则</div>
 				</div>
 			</div>
 		</div>
 		<div class="main-ind">
-			<span>会员享受优惠价格<span id="discount"></span> %</span>
+			<span>分销商应付原价格的<span id="discount"></span> %</span>
 		</div>
 		<section class="memWrap">
 
@@ -86,58 +86,69 @@
 					}
 				});
 
-				$.ajax({
-					type: "post",
-					url: url_url + "/merchant/queryMyVip",
-					async: true,
-					data: {
-						'smMerchantId': smMerchantId,
-						'type': 1
-					},
-					success: function(res) {
-						let data = res.data;
-						for(var i = 0; i < data.length; i++) {
-							let creatDate = data[i].smAmCreateTime.substring(0, 10) + ' ' + data[i].smAmCreateTime.substring(11, 19);
-							memberList += `
-				 			     <div class="main-tab" data-id=${data[i].smApplyMemberId}>
-									<div class="main-left">
-										<img src="${url_url + data[i].smAmShopLogo}" />
-									</div>
-						
-									<div class="main-right">
-										<div class="main-upper">
-											<div class="main-characters">${data[i].smMerchantName}</div>
-										</div>
-						
-										<div class="main-lower">
-											<div class="main-number">加入时间：${creatDate}</div>
-										</div>
-									</div>
-								</div>
-				 			`;
-						}
-						$('.memWrap').append(memberList);
-					},
-					error: function(err) {
-
-					}
-				});
-
-				mui('body').on('tap', '.main-tab', function() {
-					let MemberId = $(this).data('id');
-					console.log(MemberId);
-
-					mui.openWindow({
-						url: 'MemerDetail.html',
-						id: 'MemerDetail',
-						extras: {
-							'MemberId': MemberId
+				function myajax(){
+					
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/queryMyVip",
+						async: true,
+						data: {
+							'smMerchantId': smMerchantId,
+							'type': 1
 						},
-						waiting: {
-							autoShow: false
+						success: function(res) {
+							let data = res.data;
+							$('.memWrap').html('')
+							memberList=''
+							for(var i = 0; i < data.length; i++) {
+								let creatDate = data[i].smAmCreateTime.substring(0, 10) + ' ' + data[i].smAmCreateTime.substring(11, 19);
+								memberList += `
+					 			     <div class="main-tab">
+										<div class="main-left">
+											<img src="${url_url + data[i].smAmShopLogo}" />
+										</div>
+							
+										<div class="main-right">
+											<div class="main-upper">
+												<div class="main-characters">${data[i].smMerchantName}</div>
+											</div>
+							
+											<div class="main-lower">
+												<div class="main-number">加入时间：${creatDate}</div>
+											</div>
+										</div>
+										<div class="main-btn" id='${data[i].smApplyMemberId}'>
+											解除
+										</div>
+									</div>
+					 			`;
+							}
+							$('.memWrap').append(memberList);
+						},
+						error: function(err) {
+					
 						}
 					});
-
+				}
+				myajax()
+				
+				
+				mui('body').on('tap', '.main-btn', function() {
+					let MemberId = $(this).attr('id');
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/updateSmApplyMemberJc",
+						async: true,
+						data: {
+							'smApplyMemberId': MemberId
+						},
+						success: function(res) {
+							myajax()
+						},
+						error: function(err) {
+					
+						}
+					});
 				});
 
 			})

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<script src="js/rem.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" type="text/css" href="css/My-wallet.css" />
+		<link rel="stylesheet" type="text/css" href="css/mui.min.css" />
+		<script type="text/javascript" src="js/mui.js"></script>
+		<script type="text/javascript" src="js/rem.js"></script>
+	</head>
+	<style type="text/css">
+		.main-word {
+			flex: 1;
+		}
+
+		button {
+			width: 100%;
+			height: .9rem;
+			background: #FC4149;
+			color: #FFFFff;
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			border: 0;
+		}
+	</style>
+	<body>
+		<div class="wrapper">
+			<div class="header">
+				<div class="header-aside mui-action-back" >
+					<img src="img/block-left.png" />
+				</div>
+				<div class="header-content">分享分钱规则</div>
+				<div class="header-text"></div>
+			</div>
+			<div class="main">
+				<input type="text" placeholder="请输入普通用户分享分钱规则" class="pu">
+				<input type="text" placeholder="请输入分销商分享分钱规则" class="hui">
+				<button onclick="bianji()">
+					保存
+				</button>
+			</div>
+		</div>
+		<script src="js/url.js"></script>
+		<script src="js/jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/vue.js" type="text/javascript" charset="utf-8"></script>
+		<script type="text/javascript">
+			var mydata=''
+			function myajax() {
+				var that = this
+				// 查询现有规则
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/selectSmMerchantShareRule",
+					dataType: 'json',
+					async: true,
+					data: {
+						smMerchantId: localStorage.getItem("smMerchantId"),
+					},
+					success: function(res) {
+						mydata = res.data
+						for (i in res.data) {
+							if (res.data[i].smMsrType == 1) {
+								$('.pu').val(res.data[i].smMsrNum)
+							}
+							if (res.data[i].smMsrType == 2) {
+								$('.hui').val(res.data[i].smMsrNum)
+							}
+						}
+						insert()
+					},
+					error: function(err) {
+						console.log(err);
+					}
+				});
+			}
+			myajax()
+
+			function insert() {
+				var that = this
+				// 新增规则
+				if ($('.pu').val()=='') {
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/insertSmMerchantShareRule",
+						dataType: 'json',
+						async: true,
+						data: {
+							smMerchantId: localStorage.getItem("smMerchantId"),
+							smMsrType: 1,
+							smMsrNum: 0,
+							smMsrCreateName: localStorage.getItem("smMerchantId")
+						},
+						success: function(res) {
+							$('.pu').val(0)
+						},
+						error: function(err) {
+							console.log(err);
+						}
+					});
+				}
+				if ($('.hui').val()=='') {
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/insertSmMerchantShareRule",
+						dataType: 'json',
+						async: true,
+						data: {
+							smMerchantId: localStorage.getItem("smMerchantId"),
+							smMsrType: 2,
+							smMsrNum: 0,
+							smMsrCreateName: localStorage.getItem("smMerchantId")
+						},
+						success: function(res) {
+							$('.hui').val(0)
+						},
+						error: function(err) {
+							console.log(err);
+						}
+					});
+				}
+			}
+
+			function bianji() {
+				var that = this
+				if ($('.pu').val() == 0 || $('.pu').val() == '' || $('.hui').val() == 0 || $('.hui').val() == '') {
+					alert('参数不可为空或者为0')
+					return
+				}
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/updateSmMerchantShareRule",
+					dataType: 'json',
+					async: true,
+					data: {
+						smMerchantId: localStorage.getItem("smMerchantId"),
+						smMerchantShareRuleId: mydata[0].smMerchantShareRuleId,
+						smMsrNum: $('.pu').val()
+					},
+					success: function(res) {
+
+					},
+					error: function(err) {
+						console.log(err);
+					}
+				});
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/updateSmMerchantShareRule",
+					dataType: 'json',
+					async: true,
+					data: {
+						smMerchantId: localStorage.getItem("smMerchantId"),
+						smMerchantShareRuleId: mydata[1].smMerchantShareRuleId,
+						smMsrNum: $('.hui').val()
+					},
+					success: function(res) {
+
+					},
+					error: function(err) {
+						console.log(err);
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

@@ -93,7 +93,7 @@
 						},
 						success: function(res) {
 							if(res.status == 200) {
-								$(thats).attr('src',url_url + res.data);
+								$(thats).attr('src',url_url + res.data)
 							} else {
 								alert(res.msg)
 							}

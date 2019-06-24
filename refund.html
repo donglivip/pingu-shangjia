@@ -106,6 +106,7 @@
 							},
 							success: function(res) {
 								alert('已拒绝')
+								plus.webview.getWebviewById('Order_receipt').reload()
 								mui.back()
 							},
 							error: function(err) {
@@ -135,6 +136,7 @@
 					success: function(res) {
 						if(res.status==200){
 								alert('已退款')
+								plus.webview.getWebviewById('Order_receipt').reload()
 								mui.back()
 						}else{
 							alert(res.msg)

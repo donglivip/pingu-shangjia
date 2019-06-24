@@ -14,7 +14,26 @@
 		<link rel="stylesheet" href="css/como.css" />
 		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
 	</head>
+	<style type="text/css">
+		.mui-control-item {
+			position: relative;
+		}
 
+		.num {
+			position: absolute;
+			top: 0;
+			right: 0;
+			background: red;
+			color: #FFFFFF;
+			width: .3rem;
+			height: .3rem;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			z-index: 999;
+		}
+	</style>
 	<body>
 		<div class="wrapper">
 			<header class="mui-bar mui-bar-nav home" style="top: 0;-webkit-box-shadow:none;">
@@ -25,9 +44,9 @@
 			<div class="header">
 				<div>
 					<div id="segmentedControl" class="mui-segmented-control mui-segmented-control-inverted ">
-						<a class="mui-control-item mui-active" href="#item0" id="wait">待接单</a>
+						<a class="mui-control-item mui-active" href="#item0" id="wait">待接单<span class="num" id="one">0</span></a>
 						<a class="mui-control-item" href="#item1" id="unpaid">待支付</a>
-						<a class="mui-control-item" href="#item2" id="unshipped">待发货</a>
+						<a class="mui-control-item" href="#item2" id="unshipped">待发货<span class="num" id="two">0</span></a>
 						<a class="mui-control-item" href="#item3" id="norefund">待退款</a>
 						<a class="mui-control-item" href="#item4" id="shipped">已发货</a>
 						<a class="mui-control-item" href="#item5" id="signed">已签收</a>
@@ -88,7 +107,7 @@
 		<script type="text/javascript" src="js/loading.js"></script>
 		<script type="text/javascript">
 			var smUserId = localStorage.getItem('smMerchantId');
-
+			
 			$.ajax({
 				type: "post",
 				url: url_url + "/merchant/queryWaitingList",
@@ -98,9 +117,10 @@
 				},
 				success: function(res) {
 					var _waitList = '';
-					if(res.status == 200) {
-						for(var i = 0; i < res.data.length; i++) {
-							_waitList += `<div class="mui-table-view">
+					if (res.status == 200) {
+						for (var i = 0; i < res.data.length; i++) {
+							_waitList +=
+								`<div class="mui-table-view">
 								<div class="main-tab">
 									<div class="main-text">订单号：${res.data[i].smOrderId}</div>
 									<div class="main-time">${res.data[i].smOrCreateTimeString}</div>
@@ -139,7 +159,6 @@
 			//  取消订单
 			$('body').on('click', '.cancelItemBtn', function() {
 				var smOrderId = $(this).data('id')
-
 				$.ajax({
 					type: "post",
 					url: url_url + "/merchant/merchantCancellationOfOrders",
@@ -148,20 +167,21 @@
 						smOrderId: smOrderId
 					},
 					success: function(res) {
-						if(res.status == 200) {
+						if (res.status == 200) {
 							location.reload()
+						} else {
+							alert(res.msg)
 						}
 
 					},
 					error: function(err) {
-
+						alert(JSON.stringify(err))
 					}
 				});
 			});
 			//  接单
 			$('body').on('click', '.sureItemBtn', function() {
 				var smOrderId = $(this).data('id')
-				console.log(smOrderId);
 				$.ajax({
 					type: "post",
 					url: url_url + "/merchant/merchantReceipt",
@@ -170,7 +190,7 @@
 						smOrderId: smOrderId
 					},
 					success: function(res) {
-						if(res.status == 200) {
+						if (res.status == 200) {
 							plus.nativeUI.toast('接单成功')
 							location.reload()
 						} else {
@@ -185,12 +205,6 @@
 			})
 
 			$(function() {
-
-				//				document.getElementById('wait').addEventListener('tap', function() {
-				//					$('#waitList').empty();
-				//					QueryOrder(smUserId, '#waitList');
-				//				});
-
 				document.getElementById('unpaid').addEventListener('tap', function() {
 					$('#unpaidView').empty();
 					QueryOrder(smUserId, 1, '#unpaidView');
@@ -215,11 +229,37 @@
 					$('#signedView').empty();
 					QueryOrder(smUserId, 5, '#signedView');
 				});
-
+				function tishi(){
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/queryOrder",
+						async: true,
+						dataType: 'json',
+						data: {
+							'smUserId': smUserId,
+							'type': 2
+						},
+						success: function(res) {
+							$('#two').html(res.data.length)
+						}
+					});
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/queryWaitingList",
+						async: true,
+						data: {
+							smMerchantId: smUserId
+						},
+						success: function(res) {
+							$('#one').html(res.data.length)
+						}
+					});
+					setTimeout(function() {tishi()}, 6000);
+				}
+				tishi()
 			});
 
 			function QueryOrder(smUserId, type, ele) {
-				console.log(smUserId, type, ele);
 				$.ajax({
 					type: "post",
 					url: url_url + "/merchant/queryOrder",
@@ -249,12 +289,12 @@
 						removeLoading('test');
 					},
 					success: function(res) {
-						if(res.status == 200) {
+						if (res.status == 200) {
 							var _orderHtml = '';
 							var _Xbtn = '';
 							var _order = res.data;
-							for(var i = 0; i < _order.length; i++) {
-								switch(type) {
+							for (var i = 0; i < _order.length; i++) {
+								switch (type) {
 									case 1:
 										_Xbtn = '<div class="main-news">已下单未支付</div>'
 										console.log(1);
@@ -264,18 +304,16 @@
 										console.log(2);
 										break;
 									case 3:
-										_Xbtn = `<div class="main-news">已支付</div><button class="main-word" id="refundBtn" data-id= ${_order[i].smOrderId}>处理退款</button>`
+										_Xbtn =
+											`<div class="main-news">已支付</div><button class="main-word" id="refundBtn" data-id= ${_order[i].smOrderId}>处理退款</button>`
 										console.log(3);
-										break;
-									case 4:
-										_Xbtn = `<div class="main-news">已支付</div><button class="main-word">查看物流</button>`
-										console.log(4);
 										break;
 								}
 
 								console.log(_order[i]);
 
-								_orderHtml += `
+								_orderHtml +=
+									`
 								    <div class="mui-table-view">
 								<div class="main-tab">
 									<div class="main-text">订单号：${_order[i].smOrderId}</div>
@@ -283,7 +321,7 @@
 								</div>
 								<div class="main-Photo" data-id="${_order[i].smOrderId}">
 									<div class="main-left">
-										<img src=${_order[i].smMeShopImg} />
+										<img src=${ _order[i].smMeShopImg} />
 									</div>
 									<div class="main-right">
 										<div class="main-upper">
@@ -298,7 +336,9 @@
 								<div class="main-payment">
 									<div class="main-message">买家留言：${_order[i].smOrRemarks?_order[i].smOrRemarks:'无' }</div>
 								</div>
-								<div class="main-bottom">` + _Xbtn + `
+								<div class="main-bottom">` +
+									_Xbtn +
+									`
 									<button class="main-Buyer callBuyer" data-id=${_order[i].smUsPhone}>联系买家</button>
 								</div>
 							</div>`;
@@ -306,12 +346,12 @@
 							$(ele).append(_orderHtml);
 
 						} else {
-							
+
 						}
 
 					},
 					error: function(err) {
-						
+
 					}
 
 				});
@@ -381,7 +421,7 @@
 				console.log(smOrderId + '我是id')
 				e.detail.gesture.preventDefault();
 				mui.prompt('输入快递单号', '', '发货', btnArray, function(e) {
-					if(e.index == 1) {
+					if (e.index == 1) {
 						let smOrExpress = e.value;
 						let smOrUpdateName = localStorage.getItem('smOrUpdateName');
 						//						let smOrUpdateName = localStorage.getItem('smMerchantId');
@@ -417,11 +457,11 @@
 			mui("body").on('tap', '.callBuyer', function(e) {
 				var phone = $(this).data('id')
 				console.log(phone)
-				var btnArray = ['拨打', '取消'];         
-				mui.confirm('是否拨打' + phone + '?', '提示', btnArray, function(e) {            
-					if(e.index == 0) {               
-						plus.device.dial(phone, false);            
-					}         
+				var btnArray = ['拨打', '取消'];
+				mui.confirm('是否拨打' + phone + '?', '提示', btnArray, function(e) {
+					if (e.index == 0) {
+						plus.device.dial(phone, false);
+					}
 				});
 
 			});

@@ -12,7 +12,12 @@
 		<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
 		<link rel="stylesheet" type="text/css" href="css/my.css"/>
 	</head>
-
+	<style>
+		.main-left{
+			width: 2rem;height: 2rem;
+		}
+		.main-left img{height: 100%;width: 100%;}
+	</style>
 	<body>
 		<div class="wrapper">
 			<div class="header">
@@ -56,8 +61,26 @@
 		</div>
 
 		<script src="js/url.js"></script>
+		<script src="js/upload04.js" type="text/javascript" charset="utf-8"></script>
 		<script type="text/javascript">
 			$(function() {
+				$.ajax({
+					type: "post",
+					url: url_url + "/user/selectMerchantCount",
+					async: true,
+					data: {
+						'smMerchantId': localStorage.getItem('smMerchantId')
+					},
+					success: function(res) {
+						if(localStorage.getItem('smMeMortgagePrice') == -1 || localStorage.getItem('smMeMortgagePrice') == '-1') {
+							alert('您还没有缴纳租金或者保证金')
+							mui.openWindow('My-wallet.html','My-wallet')
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
 				ADstatus(1, '#putingView');
 				$('.mui-control-content').css('height', $('.main').css('height'));
 				document.getElementById('puting').addEventListener('tap', function() {
@@ -96,7 +119,6 @@
 							'smAmType': type
 						},
 						success: function(res) {
-							var titImg = localStorage.getItem('smMeShopImg')
 							var adlist = res.data;
 							let ADname = '';
 							let ADlistHtml = '';
@@ -110,16 +132,23 @@
 									<div class="main-box" data-id=${adlist[i].smAdvertisementMiddleId} data-type=${adlist[i].smAmType}>
 										<div class="main-tab">
 											<div class="main-left">
-												<img src=${titImg} />
+												<img src=${adlist[i].picture} style="display:${adlist[i].state==1?'block':'none'}"/>
+												<img src=${url_url + adlist[i].picture} style="display:${adlist[i].state==2?'block':'none'}" class='xiulun' myname='${adlist[i].name}' myid='${adlist[i].smAdvertisementMiddleId}'/>
 											</div>
 											<div class="main-right">
 												<div class="main-upper">
 													<div class="main-characters">${adlist[i].name}</div>
 												</div>
 												<div class="main-lower">
-													<div class="main-number">开始时间：${startTime}</div>
-													<div class="main-number">结束时间：${endTime}</div>
-												</div>
+													<div class="main-number">
+														当前价格：${adlist[i].smAmPrice}
+														<button class='jia' myid='${adlist[i].smAdvertisementMiddleId}'>加价</button>
+													</div>
+													<div class="main-number">
+														结束时间：${endTime}
+														<button class='xu' style="display:${type==2?'block':'none'}" myid='${adlist[i].smAdvertisementMiddleId}'>续期</button>
+													</div>
+											</div>
 										</div>
 										</div>` + bottomBtn;
 							};
@@ -132,7 +161,160 @@
 						}
 					});
 				};
-
+				var channels=null;
+				// 监听plusready事件  
+				document.addEventListener("plusready", function(){
+					// 扩展API加载完毕，现在可以正常调用扩展API
+					plus.payment.getChannels( function(s){
+						channels = s;
+					}, function(e){
+						alert( "获取支付通道列表失败："+e.message );
+					});
+				}, false );
+				mui('body').on('tap', '.xiulun', function() {
+					$(this).upload('/merchant/insertCommodityImage');
+				})	
+				mui('body').on('tap', '.jia', function() {
+					var myid=$(this).attr('myid')
+					 mui.prompt('请输入价格','请输入增加价格','广告加价',['取消','支付宝','微信','余额'],function (e) {
+						if(isNaN(e.value)||e.value<=0){
+							if(e.index!=0){
+								alert('请输入数字')
+							}
+						}else{
+							if(e.index==1||e.index==2){
+								<!-- 支付宝、微信支付 -->
+								$.ajax({
+									type: "post",
+									url: url_url + "/merchant/paySmAdvertisementMiddlePriceWXAli",
+									async: true,
+									dataType:'json',
+									data: {
+										'id': myid,
+										'price': e.value,
+										state:e.index
+									},
+									success: function(res) {
+										if(e.index==1){
+											plus.payment.request(channels[0], res.data[0], function(){
+												mui.toast('加价成功')
+											}, function(e){
+												mui.toast("支付失败："+e.message);
+											} );
+										}else{
+											plus.payment.request(channels[1], res, function(){
+												mui.toast('加价成功')
+											}, function(e){
+												mui.toast("支付失败："+e.message);
+											} );
+										}
+									},
+									error: function(err) {
+										console.log(err)
+									}
+								});
+							}else if(e.index==3){
+								<!-- 余额支付 -->
+								$.ajax({
+									type: "post",
+									url: url_url + "/merchant/paySmAdvertisementMiddlePrice",
+									async: true,
+									data: {
+										'id': myid,
+										'price': e.value
+									},
+									success: function(res) {
+										if(res.status==200){
+											mui.toast('加价成功')
+										}else{
+											mui.toast(res.msg)
+										}
+									},
+									error: function(err) {
+										console.log(JSON.stringify( {
+										'id': myid,
+										'price': e.value
+									}));
+										console.log("err: " + JSON.stringify(err));
+									}
+								});
+							}
+						}
+					},'div')
+				})	
+				mui('body').on('tap', '.xu', function() {
+					var myid=$(this).attr('myid')
+					<!-- 查询续期规则 -->
+					$.ajax({
+						type: "post",
+						url: url_url + "/merchant/queryRenew",
+						async: true,
+						data: {
+							'id': myid
+						},
+						success: function(res) {
+							mui.confirm('请选择支付方式','广告续期',['取消','支付宝','微信','余额'],function (e) {
+							   if(e.index==1||e.index==2){
+									<!-- 支付宝、微信支付 -->
+									$.ajax({
+										type: "post",
+										url: url_url + "/merchant/paySmAdvertisementMiddleRenewWxAli",
+										async: true,
+										data: {
+											'id': myid,
+											'price':res.data.price,
+											time:res.data.time,
+											state:e.index
+										},
+										success: function(res) {
+											if(e.index==1){
+												plus.payment.request(channels[0], res.data[0], function(){
+													mui.toast('续期成功')
+												}, function(e){
+													mui.toast("支付失败："+e.message);
+												} );
+											}else{
+												plus.payment.request(channels[1], res, function(){
+													mui.toast('续期成功')
+												}, function(e){
+													mui.toast("支付失败："+e.message);
+												} );
+											}
+										},
+										error: function(err) {
+											console.log(err)
+										}
+									});
+							   }else if(e.index==3){
+							   	<!-- 余额支付 -->
+							   	$.ajax({
+							   		type: "post",
+							   		url: url_url + "/merchant/paySmAdvertisementMiddleRenew",
+							   		async: true,
+							   		data: {
+							   			'id': myid,
+							   			'price':res.data.price,
+							   			 time:res.data.time,
+							   		},
+							   		success: function(res) {
+							   			if(res.status==200){
+							   				mui.toast('续期成功')
+							   			}else{
+							   				mui.toast(res.msg)
+							   			}
+							   		},
+							   		error: function(err) {
+							   			console.log(err)
+							   		}
+							   	});
+							   }
+							},'div')
+						},
+						error: function(err) {
+							console.log(err)
+						}
+					});
+				})	
 			});
 		</script>
 	</body>
