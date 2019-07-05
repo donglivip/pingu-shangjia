@@ -38,7 +38,7 @@
 						<small>以上价格为起步价,您投放的价格越高排名越靠前</small>
 						<small>目前广告位金额: <span v-for="(item,index) in slguize.list">第{{index+1}}名:￥{{item}},</span></small>
 					</div>
-					<div class="er" @click="maishou(1,sguize.smAprPrice,sguize.smAprTime,sguize.smAdvertisementPriceRuleId)">
+					<div class="er" @click="upload(1,sguize.smAprPrice,sguize.smAprTime,sguize.smAdvertisementPriceRuleId)">
 						<img src="img/dianpu.png">
 						<span>投放首页广告区广告</span>
 						<span>起步价<strong>￥{{sguize.smAprPrice}}</strong> </span>
@@ -54,10 +54,10 @@
 							<option value="">行业分类</option>
 							<option :value="val.smShopTypeId" v-for="(val,index) in yijidata">{{val.smStName}}</option>
 						</select>
-<!-- 						<select v-model="erjiid" @click="haverule(4)">
+						<select v-model="erjiid" @click="haverule(4)">
 							<option value="">产品分类</option>
 							<option :value="val.smShopTypeId" v-for="(val,index) in erjidata">{{val.smStName}}</option>
-						</select> -->
+						</select>
 						<select v-model="diquid" @change='diquchange'>
 							<option value="">地区分类</option>
 							<option :value="val.smAdvertisementAddressId" v-for="(val,index) in diqudata">{{val.smAaProvice}}{{val.smAaCity}}{{val.smAaArea}}</option>
@@ -269,10 +269,6 @@
 								type: that.mytype
 							},
 							success: function(res) {
-								console.log(JSON.stringify({
-								smMerchantId: localStorage.getItem('smMerchantId'),
-								type: that.mytype==1?1:2
-							}));
 								console.log("res: " + JSON.stringify(res));
 								if (res.status == 200) {
 									that.pay02(type, url)

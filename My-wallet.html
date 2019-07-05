@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
@@ -12,7 +11,6 @@
 		<script type="text/javascript" src="js/mui.js"></script>
 		<script type="text/javascript" src="js/rem.js"></script>
 	</head>
-
 	<body>
 		<div class="wrapper">
 			<div class="header">
@@ -34,17 +32,18 @@
 					<div class="main-bottom">
 						<div class="main-left">
 							<div class="main-bond">店铺保证金</div>
-							<div class="main-number">￥<span class="shou" id="bzmoney">300</span></div>
+							<div class="main-number">￥<span class="shou" id="bzmoney">0</span></div>
 							<div class="left-bottom">
 								<a class="main-Relieve main-Relieve01" href="#typeLayer">缴纳保证金</a>
 								<div class="main-Relieve main-Relieve01" id="jiechu">解除保证金</div>
 							</div>
 						</div>
 						<div class="main-left">
-							<div class="main-bond">租金</div>
-							<div class="main-number">￥<span class="shou" id="zumoney">200</span></div>
+							<div class="main-bond">当前租金</div>
+							<div class="main-number">￥<span class="shou" id="zumoney">0</span></div>
 							<div class="left-bottom">
-								<a class="main-Relieve main-Relieve02" style="display: none;" href="#zprice">缴纳租金</a>
+								<a class="main-Relieve main-Relieve02" href="#zprice" style="display: none;">缴纳租金</a>
+								<a class="main-Relieve main-Relieve02" href="#jprice" style="display: none;">加价租金</a>
 							</div>
 						</div>
 					</div>
@@ -61,7 +60,32 @@
 				<div class="main-box shangxian">
 					<div class="main-word" id="alipay">购买上架产品数量 </div>
 				</div>
+				<div class="qian">
+					<p>店铺租金越高,您的排名就会越靠前。</p>
+					
+				</div>
+				
 			</div>
+			<!-- 加价租金 -->
+			<div id="jprice" class="mui-popover mui-popover-action">
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell myindex">
+						<a href="#" data-id='0'>余额支付</a>
+					</li>
+					<li class="mui-table-view-cell myindex">
+						<a href="#" data-id='1'>支付宝</a>
+					</li>
+					<li class="mui-table-view-cell myindex">
+						<a href="#" data-id='2'>微信</a>
+					</li>
+				</ul>
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell">
+						<a href="#zprice" data-id='-1'><b>取消</b></a>
+					</li>
+				</ul>
+			</div>
+			<!-- 缴纳租金 -->
 			<div id="zprice" class="mui-popover mui-popover-action">
 				<ul class="mui-table-view">
 					<li class="mui-table-view-cell myindex">
@@ -80,6 +104,7 @@
 					</li>
 				</ul>
 			</div>
+			<!-- 缴纳保证金 -->
 			<div id="typeLayer" class="mui-popover mui-popover-action">
 				<ul class="mui-table-view">
 					<li class="mui-table-view-cell myindex">
@@ -118,7 +143,74 @@
 				} else {
 					document.addEventListener('plusready', plusReady, false);
 				}
-				// 缴纳保证金
+				// 加价租金
+				$('#jprice .myindex').click(function() {
+					var index = $(this).index()
+					var price= mui.prompt('请输入加价价格','请输入加价价格','租金加价',['取消','确认'],function (e) {
+					   if(e.index==1&&e.value>=0){
+						   if(index == 0) {
+						   	$.ajax({
+						   		type: "post",
+						   		url: url_url + "/user/mortgagePriceAdd",
+						   		dataType: 'json',
+						   		async: true,
+						   		data: {
+						   			smMerchantId: localStorage.getItem('smMerchantId'),
+						   			price: e.value
+						   		},
+						   		success: function(res) {
+						   			if(res.status == 200) {
+						   				mui.toast('缴纳成功')
+						   				localStorage.setItem('smMeMortgagePrice',parseInt($('#zumoney').html()) + parseInt(e.value))
+						   				location.reload()
+						   			}else{
+						   				mui.toast(res.msg)
+						   			}
+						   		},
+						   		error: function(err) {
+						   			console.log(err)
+						   		}
+						   	})
+						   } else {
+						   	$.ajax({
+						   		type: "post",
+						   		url: url_url + "/user/mortgagePriceAddAliWx",
+						   		dataType: 'json',
+						   		async: true,
+						   		data: {
+						   			smMerchantId: localStorage.getItem('smMerchantId'),
+						   			price: e.value,
+						   			state: index
+						   		},
+						   		success: function(res) {
+						   				if(index == 1) {
+						   					//									支付宝支付
+						   					plus.payment.request(channel[0], res.data[0], function(result) {
+						   						mui.toast('投放成功')
+												localStorage.setItem('smMeMortgagePrice',parseInt($('#zumoney').html()) + parseInt(e.value))
+						   					}, function(error) {
+						   						alert('支付失败')
+						   					});
+						   				} else {
+						   					//									微信支付
+						   					plus.payment.request(channel[1], res, function(result) {
+						   						mui.toast('投放成功')
+												localStorage.setItem('smMeMortgagePrice',parseInt($('#zumoney').html()) + parseInt(e.value))
+						   					}, function(error) {
+						   						alert('支付失败')
+						   					});
+						   				}
+						   		},
+						   		error: function(err) {
+						   			console.log(err)
+						   		}
+						   	})
+						   }
+					   }
+					},'div')
+					
+				})
+				// 缴纳租金
 				$('#zprice .myindex').click(function() {
 					var index = $(this).index()
 					if(index == 0) {
@@ -288,7 +380,7 @@
 					$('.main-Relieve01').eq(1).show()
 					$('.main-Relieve01').eq(0).hide()
 				}
-				//				租金
+				//				查询租金规则
 				$.ajax({
 					type: "post",
 					url: url_url + "/merchant/selectSmDepositRuleMerchantId",
@@ -299,14 +391,32 @@
 					},
 					success: function(res) {
 						$('#zumoney').html(res.data.smDrMortgagePrice)
-						$('.main-Relieve02').html('缴纳租金')
 					},
 					error: function(err) {
 						console.log(err)
 					}
 				});
+				// 查询租金钱10名
+				$.ajax({
+					type: "post",
+					url: url_url + "/merchant/selectSmMerchantHighRent",
+					dataType: 'json',
+					async: true,
+					success: function(res) {
+						for(i in res.data){
+							$('.qian').append(`<p>第${parseInt(i) + 1}名：￥${res.data[i]}</p>`)
+						}
+					},
+					error: function(err) {
+						console.log(err)
+					}
+				});
+				<!-- 判断是否缴纳租金 -->
 				if(localStorage.getItem('smMeMortgagePrice') == -1 || localStorage.getItem('smMeMortgagePrice') == '-1') {
-					$('.main-Relieve02').show()
+					$('.main-Relieve02').eq(0).show()
+				}else{
+					$('#zumoney').html(localStorage.getItem('smMeMortgagePrice'))
+					$('.main-Relieve02').eq(1).show()
 				}
 				$.ajax({
 					type: "post",

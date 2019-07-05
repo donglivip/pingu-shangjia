@@ -107,55 +107,10 @@
 		<script type="text/javascript" src="js/loading.js"></script>
 		<script type="text/javascript">
 			var smUserId = localStorage.getItem('smMerchantId');
+			document.addEventListener("xiadanyemian", function() {
+				location.reload()				
+			})
 			
-			$.ajax({
-				type: "post",
-				url: url_url + "/merchant/queryWaitingList",
-				async: true,
-				data: {
-					smMerchantId: smUserId
-				},
-				success: function(res) {
-					var _waitList = '';
-					if (res.status == 200) {
-						for (var i = 0; i < res.data.length; i++) {
-							_waitList +=
-								`<div class="mui-table-view">
-								<div class="main-tab">
-									<div class="main-text">订单号：${res.data[i].smOrderId}</div>
-									<div class="main-time">${res.data[i].smOrCreateTimeString}</div>
-								</div>
-								<div class="main-Photo" data-id="${res.data[i].smOrderId}">
-									<div class="main-left">
-										<img src="${res.data[i].smMeShopImg}" />
-									</div>
-									<div class="main-right">
-										<div class="main-upper">
-											<div class="main-characters">${res.data[i].smMeShopName}</div>
-										</div>
-										<div class="main-lower">
-											<div class="main-number">￥${res.data[i].smOrPrice}</div>
-											<div class="main-ride">x${res.data[i].smOrNum}</div>
-										</div>
-									</div>
-								</div>
-								<div class="main-payment">
-									<div class="main-message">买家留言：${res.data[i].smOrRemarks?res.data[i].smOrRemarks:'无' }</div>
-								</div>
-								<div class="main-bottom">
-								   <div class="main-news">待接单</div>
-								   <button class="main-word cancelItemBtn"  data-id= ${res.data[i].smOrderId}>取消订单 </button>
-								   <button class="main-Buyer sureItemBtn" data-id= ${res.data[i].smOrderId}>确定接单</button>
-								</div>
-							</div>`
-						}
-						$('#waitList').append(_waitList);
-					}
-				},
-				error: function(err) {
-					console.log(err);
-				}
-			});
 			//  取消订单
 			$('body').on('click', '.cancelItemBtn', function() {
 				var smOrderId = $(this).data('id')
@@ -252,6 +207,45 @@
 						},
 						success: function(res) {
 							$('#one').html(res.data.length)
+							$('#waitList').html('')
+							var _waitList = '';
+							if (res.status == 200) {
+								for (var i = 0; i < res.data.length; i++) {
+									_waitList +=
+										`<div class="mui-table-view">
+										<div class="main-tab">
+											<div class="main-text">订单号：${res.data[i].smOrderId}</div>
+											<div class="main-time">${res.data[i].smOrCreateTimeString}</div>
+										</div>
+										<div class="main-Photo" data-id="${res.data[i].smOrderId}">
+											<div class="main-left">
+												<img src="${JSON.parse(res.data[i].smMeShopImg)[0]}" />
+											</div>
+											<div class="main-right">
+												<div class="main-upper">
+													<div class="main-characters">${res.data[i].smMeShopName}</div>
+												</div>
+												<div class="main-lower">
+													<div class="main-number">￥${res.data[i].smOrPrice}</div>
+													<div class="main-ride">x${res.data[i].smOrNum}</div>
+												</div>
+											</div>
+										</div>
+										<div class="main-payment">
+											<div class="main-message">买家留言：${res.data[i].smSulName?res.data[i].smSulName:'无' }</div>
+										</div>
+										<div class="main-payment" style='text-align:right;margin-right:.2rem'>
+											更多商品点击详情查看
+										</div>
+										<div class="main-bottom">
+										   <div class="main-news">待接单</div>
+										   <button class="main-word cancelItemBtn"  data-id= ${res.data[i].smOrderId}>取消订单 </button>
+										   <button class="main-Buyer sureItemBtn" data-id= ${res.data[i].smOrderId}>确定接单</button>
+										</div>
+									</div>`
+								}
+								$('#waitList').append(_waitList);
+							}
 						}
 					});
 					setTimeout(function() {tishi()}, 6000);
@@ -321,7 +315,7 @@
 								</div>
 								<div class="main-Photo" data-id="${_order[i].smOrderId}">
 									<div class="main-left">
-										<img src=${ _order[i].smMeShopImg} />
+										<img src=${JSON.parse( _order[i].smMeShopImg)[0]} />
 									</div>
 									<div class="main-right">
 										<div class="main-upper">
@@ -334,7 +328,10 @@
 									</div>
 								</div>
 								<div class="main-payment">
-									<div class="main-message">买家留言：${_order[i].smOrRemarks?_order[i].smOrRemarks:'无' }</div>
+									<div class="main-message">买家留言：${res.data[i].smSulName?res.data[i].smSulName:'无' }</div>
+								</div>
+								<div class="main-payment" style='text-align:right;margin-right:.2rem'>
+									更多商品点击详情查看
 								</div>
 								<div class="main-bottom">` +
 									_Xbtn +

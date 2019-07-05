@@ -132,8 +132,8 @@
 									<div class="main-box" data-id=${adlist[i].smAdvertisementMiddleId} data-type=${adlist[i].smAmType}>
 										<div class="main-tab">
 											<div class="main-left">
-												<img src=${adlist[i].picture} style="display:${adlist[i].state==1?'block':'none'}"/>
-												<img src=${url_url + adlist[i].picture} style="display:${adlist[i].state==2?'block':'none'}" class='xiulun' myname='${adlist[i].name}' myid='${adlist[i].smAdvertisementMiddleId}'/>
+												<img src=${adlist[i].picture} style="display:${adlist[i].state==1&&adlist[i].name!='首页广告'?'block':'none'}"/>
+												<img src=${url_url + adlist[i].picture} style="display:${adlist[i].state==2||adlist[i].name=='首页广告'?'block':'none'}" class='xiulun' myname='${adlist[i].name}' myid='${adlist[i].smAdvertisementMiddleId}'/>
 											</div>
 											<div class="main-right">
 												<div class="main-upper">

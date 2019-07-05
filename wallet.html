@@ -48,7 +48,6 @@
 						
 					},
 					success: function(res) {
-						console.log(JSON.stringify(res));
 						let money = res.data;
 						for(var i = 0; i < res.data.length; i++) {
 							console.log()
@@ -134,6 +133,21 @@
 									<div class="main-box">
 										<div class="main-tab">
 											<div class="main-text">缴纳</div>
+											<div class="main-text">-${money[i].smMfPrice}</div>
+										</div>
+										<div class="main-bottom">
+											<div class="main-news">余额：${money[i].smMfWalletPrice}</div>
+											<div class="main-news">${money[i].smMfCreateTimeString}</div>
+										</div>
+									</div>
+								</div>`;
+							}else if(res.data[i].smMfStyle == 7){
+								//缴纳
+								_mainHtml += `
+								  <div class="main">
+									<div class="main-box">
+										<div class="main-tab">
+											<div class="main-text">${money[i].smMfResult}</div>
 											<div class="main-text">-${money[i].smMfPrice}</div>
 										</div>
 										<div class="main-bottom">

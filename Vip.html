@@ -24,7 +24,7 @@
 			</div>
 		</div>
 		<div class="main-ind">
-			<span>分销商应付原价格的<span id="discount"></span> %</span>
+			<span>分销商优惠原价格的<span id="discount"></span> %</span>
 		</div>
 		<section class="memWrap">
 
@@ -132,7 +132,9 @@
 				}
 				myajax()
 				
-				
+				document.addEventListener("xiadanyemian", function() {
+					location.reload()
+				})
 				mui('body').on('tap', '.main-btn', function() {
 					let MemberId = $(this).attr('id');
 					$.ajax({

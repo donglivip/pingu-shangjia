@@ -56,7 +56,7 @@
 		<div style="height: 44px;"></div>
 		<section class="main-box">
 			 <div class="main-line">
-			 	  <p class="left-text">设置分销商应付原价格的</p>
+			 	  <p class="left-text">设置分销商优惠原价格的</p>
 			 	  <div><input class="right-text" type="text" placeholder="例如：6"/>  %</div>
 			 </div>
 		</section>
@@ -88,6 +88,8 @@
 		 	 			success:function(res){
 		 	 				if(res.status==200){
 		 	 					mui.toast('修改成功')
+								var xiadanyemian=plus.webview.getWebviewById("vip");
+								mui.fire(xiadanyemian,'xiadanyemian',{});
 		 	 					mui.back()
 		 	 				}else{
 		 	 					mui.toast('修改失败')

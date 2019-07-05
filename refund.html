@@ -106,7 +106,8 @@
 							},
 							success: function(res) {
 								alert('已拒绝')
-								plus.webview.getWebviewById('Order_receipt').reload()
+								var xiadanyemian=plus.webview.getWebviewById("Order_receipt.html");
+								mui.fire(xiadanyemian,'xiadanyemian',{});
 								mui.back()
 							},
 							error: function(err) {
@@ -124,6 +125,7 @@
 
 				let smOrderId = $(this).data('id');
 				let smOrReturnHandle = '';
+				
 				$.ajax({
 					type: "post",
 					url: url_url + "/merchant/updateRefundOrder",
@@ -136,7 +138,8 @@
 					success: function(res) {
 						if(res.status==200){
 								alert('已退款')
-								plus.webview.getWebviewById('Order_receipt').reload()
+								var xiadanyemian=plus.webview.getWebviewById("Order_receipt.html");
+								mui.fire(xiadanyemian,'xiadanyemian',{});
 								mui.back()
 						}else{
 							alert(res.msg)
