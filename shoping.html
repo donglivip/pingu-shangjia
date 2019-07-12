@@ -80,7 +80,7 @@
 					<div class="img-box">
 						<img src="img/upload.png" id="itemImg" />
 					</div>
-					<p class="banner-txt">请输入商品简介</p>
+					<p class="banner-txt">请输入商品简介 <small>(点击输入框可上传图片)</small></p>
 					<textarea id="textarea1" style="width:100%;height:100%;border: 1px solid gainsboro;" value="请输入商品简介">
 
                     </textarea>
@@ -231,6 +231,7 @@
 					var typeHtml = ''
 					if(res.data.length == 0 || res.data == null) {
 						alert('请先添加分类')
+						mui.back()
 					} else {
 						for(i in res.data) {
 							$('#TypeOne').append(`

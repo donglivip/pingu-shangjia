@@ -3,7 +3,7 @@
     "id" : "H598BB0AF", /*应用的标识*/
     "name" : "拼股商城-商家端", /*应用名称，程序桌面图标名称*/
     "version" : {
-        "name" : "1.0.0", /*应用版本名称*/
+        "name" : "1.0.2", /*应用版本名称*/
         "code" : ""
     },
     "description" : "", /*应用描述信息*/
@@ -95,7 +95,8 @@
         "NativeObj" : {
             "description" : "原生对象"
         },
-        "Payment" : {}
+        "Payment" : {},
+        "Share" : {}
     },
     "plus" : {
         "splashscreen" : {
@@ -245,6 +246,12 @@
                     "alipay" : {},
                     "weixin" : {
                         "appid" : "wxd3f94b6639a304a0"
+                    }
+                },
+                "share" : {
+                    "weixin" : {
+                        "appid" : "wxd3f94b6639a304a0",
+                        "appsecret" : "dd7b3a774693e4ab3026d266fb9e4c24"
                     }
                 }
             }
